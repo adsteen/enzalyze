@@ -9,7 +9,7 @@
 
 
 #convert_time <- function(d, date_col=NA, time_col="time", format="ymd_hm") {
-calc_elapsed <- function(d, date_col=NA, time_col="time", format="ymd_hm") {
+convert_time <- function(d, date_col=NA, time_col="time", format="ymd_hm") {
   
   # Drop case of "format" in case user uses caps for some reason
   format <- tolower(format)
@@ -18,22 +18,27 @@ calc_elapsed <- function(d, date_col=NA, time_col="time", format="ymd_hm") {
   #   Not sure how to do this yet
   
   # Get the lubridate function to convert time - should be ymd_hms, or similar
-  time_converter <- get("format") #Include error trapping please
+  time_converter <- get(format) #Include error trapping please
   
   # Pull out date and time as separate columns
-  if (is.na(date_var)) {
+  if (is.na(date_col)) {
     date <- "1978-05-17"
   } else {
     date <- d[ , date_col]
   }
   time <- d[ , time_col]
+  #browser()
   
   # Convert time appropriately 
-  d$Rtime <- time_converter(paste(date, time), sep=" ")
+  # INCLUDE ERROR TRAPPING
+  # d$Rtime <- time_converter(paste(date, time), sep=" ")
+  d$Rtime <- mdy_hm(paste(date, time))
   
   # Eliminate date and time columns
-  d <- d[ , !names(c(date_col, time_col)) %in% drops)] # I bet this will fail if date_col is NA
+  cols_to_drop <- c(date_col, time_col)
+  cols_to_keep <- ! (names(d) %in% cols_to_drop)
   
+  d <- d[ , cols_to_keep] # I bet this will fail if date_col is NA
   
   d
   
