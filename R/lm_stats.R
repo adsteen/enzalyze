@@ -5,17 +5,24 @@
 ##' @param yvar Numeric column to be used as the dependant variable for the regression
 ##' @details include some details here
 ##' @return Returns a one-row data frame containing (at present): slope, intercept, slope standard error, intercept standard error, p value, r-squared, and number of points.
-##' @examples
+##' @export
 ##' require(ggplot2)
 ##' lm_stats(mpg, xvar="cty", yvar="hwy")
 
 
 lm_stats <- function(d, xvar, yvar) {
   # Function to safely return the slope, intercept, slope.se, int.se, rsq, and pvalue of a linear model
+  #print(d[1, ])
   
-  
-  m <- lm(d[ , yvar] ~ d[ , xvar]) # Should wrap this in a tryCatch too!
-  sum_m <- summary(m)
+  ##### CHeck that this tryCatch syntax is correct
+  get_model <- function(m) {
+    m <- tryCatch(
+      model <- lm(d[ , yvar] ~ d[ , xvar]),
+      error <- NA,
+      finally={})
+  }
+  #m <- lm(d[ , yvar] ~ d[ , xvar]) # Should wrap this in a tryCatch too!
+  #sum_m <- summary(m)
   
   # Function to safely get the slope
   get_slope <- function(m) {

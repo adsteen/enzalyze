@@ -5,7 +5,7 @@
 ##' @param date_col Column containing the date, as text <<or numeric?>>
 ##' @param time_col Column containing the time, as text <<or numeric?>>
 ##' @param format String indicating format of concatenated date and time
-##' 
+##' @export
 
 
 #convert_time <- function(d, date_col=NA, time_col="time", format="ymd_hm") {

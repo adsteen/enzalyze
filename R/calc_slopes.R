@@ -6,6 +6,7 @@
 ##' @param response_col Column that contains the 
 ##' @param time_units Units with which to express elapsed time (output)
 ##' @param cols_to_ignore Columns to ignore
+##' @export
 
 calc_slopes <- function(dm, time_col="Rtime", response_col="fl", time_units="hours", cols_to_ignore=c("std", "air.temp")) {
   
