@@ -6,7 +6,7 @@ parse_numeric <- function(x) {
   
   # Include some warnings & error trapping if not string, etc.
   # use if(!is.na(as.numeric(x))) formulation
-  
+  # browser()
   num_list <- strsplit(x, split=" ") # could probably fancy this up with regular expressions
   
   # Pull out numbers and units into separate vectors
@@ -17,7 +17,7 @@ parse_numeric <- function(x) {
   # Not sure how to do this
   
   num_vec <- as.numeric(num_vec)
-  attr(num_vec, units) <- units_vec[1]
+  attr(num_vec, "units") <- units_vec[1]
   
   num_vec
   

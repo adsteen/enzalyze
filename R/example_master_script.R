@@ -1,10 +1,10 @@
 ### Example of how to run data
 
 d <- read_biotek()
-legend <- read_plate_setup()
+plate_legend <- read_plate_setup()
 
-# Need to move this into read_plate_setup() somehow
-names(legend)[3:6] <- c("std.or.sample", "conc", "fluorophore", "medium")
+# Parse the concentration vector in the legend
+# plate_legend$conc <- parse_numeric(legend$conc)
 
 # Merge the data and the legend
-test <- merge(d, legend, by.x="variable", by.y="well")
+test <- merge(d, plate_legend, by="well")

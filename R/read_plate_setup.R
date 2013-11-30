@@ -24,13 +24,13 @@ read_plate_setup <- function(fn="data/sample_plate_layout.csv", ncol=13,
   # Assign names to columns. I'd like to do this automatically, but I'm not yet sure how
   ###
   
-  browser()
   new.col.names <- c(column.names, LETTERS[ncol(d_parsed)-length(column.names) - 2])
   names(d_parsed)[3:ncol(d_parsed)] <- new.col.names
   
+  # browser()
   # Parse the concentration vector in the legend
-  legend$conc <- parse_numeric(legend$conc)
-  #browser()
+  d_parsed$conc <- parse_numeric(d_parsed$conc)
+  
   d_parsed
   
 }
