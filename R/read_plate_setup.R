@@ -3,7 +3,8 @@
 ##' @description For now: takes a filename, reads the file and melts it
 ##' @export
 
-read_plate_setup <- function(fn="data/sample_plate_layout.csv", ncol=13) {
+read_plate_setup <- function(fn="data/sample_plate_layout.csv", ncol=13, 
+                             column.names=c("std.or.sample", "conc", "fluorophore", "medium")) {
   
   # Read plate setup worksheet
   d <- read.csv(fn)
@@ -19,7 +20,17 @@ read_plate_setup <- function(fn="data/sample_plate_layout.csv", ncol=13) {
    # I guess I need to write sample_name_parser as vectorized 
   d_parsed <- sample_name_parser(dm_skinny)
   
+  ###
+  # Assign names to columns. I'd like to do this automatically, but I'm not yet sure how
+  ###
+  
   browser()
+  new.col.names <- c(column.names, LETTERS[ncol(d_parsed)-length(column.names) - 2])
+  names(d_parsed)[3:ncol(d_parsed)] <- new.col.names
+  
+  # Parse the concentration vector in the legend
+  legend$conc <- parse_numeric(legend$conc)
+  #browser()
   d_parsed
   
 }
