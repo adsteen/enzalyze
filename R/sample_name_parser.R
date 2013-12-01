@@ -6,9 +6,6 @@ sample_name_parser <- function(d, sample_name_col="sample.name", col_names=c("st
   # d is meant to be a melted data frame of plate addresses and the name of the sample in the plate
   # d should have two columns: one with plate addresses (e.g. C6) and one with the text name of the sample (e.g. std, 50 uM, MUB)
   
-  #####
-  # Strategy 1
-  #####
   # Probably should move this out to read_plate_setup()
   names_vec <- d[ , sample_name_col]
   

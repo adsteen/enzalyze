@@ -4,7 +4,7 @@
 
 read_biotek <- function(fn="data/test_data_2.csv", temp.var.name="T..365.450", time.var.name="Time..days.", 
                         temp.units="oC", time.units="days") {
-  d <- read.csv(fn, na.strings=c("NA, OVRFLW"), fileEncoding="latin1")
+  d <- read.csv(fn, na.strings=c("NA", "OVRFLW"), fileEncoding="latin1")
   
   # The idea will be to read data from all instruments into a common format
   # Probably in the long term this should be an object
@@ -13,12 +13,19 @@ read_biotek <- function(fn="data/test_data_2.csv", temp.var.name="T..365.450", t
   dm <- melt(d, id.vars=c(temp.var.name, time.var.name),
              variable.name="well", value.name="fl")
   
+  # Check whether fl is numeric 
+  if(!is.numeric(dm$fl)) {
+    dm$fl <- as.numeric(dm$fl)
+    warning("The fluorescence column is not read as numeric. Probably this is because an 'overflow' character was not set properly.")
+  }
+  
   # Rename temp and time columns, and set units (these will show up later in plots)
   names(dm)[names(dm)==temp.var.name] <- "temp"
   attr(dm$temp, "units") <- temp.units
   
   names(dm)[names(dm)==time.var.name] <- "time"
   attr(dm$time, "units") <- time.units
+  
   
   dm
 }

@@ -15,14 +15,14 @@ lm_stats <- function(d, xvar, yvar) {
   #print(d[1, ])
   
   ##### CHeck that this tryCatch syntax is correct
-  get_model <- function(m) {
-    m <- tryCatch(
-      model <- lm(d[ , yvar] ~ d[ , xvar]),
-      error <- NA,
-      finally={})
-  }
-  #m <- lm(d[ , yvar] ~ d[ , xvar]) # Should wrap this in a tryCatch too!
-  #sum_m <- summary(m)
+  #get_model <- function(m) {
+  # m <- tryCatch(
+  #    model <- lm(d[ , yvar] ~ d[ , xvar]),
+  #    error <- NA,
+  #    finally={})
+  #}
+  m <- lm(d[ , yvar] ~ d[ , xvar]) # Should wrap this in a tryCatch too!
+  sum_m <- summary(m)
   
   # Function to safely get the slope
   get_slope <- function(m) {
