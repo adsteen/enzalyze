@@ -59,7 +59,6 @@ cal_curve <- function(d, print.plot=TRUE, print.cal.stats=TRUE) {
   calibrated_samples$cal_fl <- (calibrated_samples$fl - calibrated_samples$int) / calibrated_samples$slope
   attr(calibrated_samples$cal_fl, "units") <- attr(d$conc, "units")
   
-  #browser()
   calibrated_samples
   
 }

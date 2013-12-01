@@ -2,8 +2,13 @@
 ##' Note that I don't really know what the output from that instrument really looks like
 ##' For now I'll use a csv file with headers as well addresses (A1, A2, etc)
 
-read_biotek <- function(fn="data/test_data_2.csv", temp.var.name="T..365.450", time.var.name="Time..days.", 
+read_biotek <- function(fn=NA, temp.var.name="T..365.450", time.var.name="Time..days.", 
                         temp.units="oC", time.units="days") {
+  # Use dialog box if no file is specified
+  if(is.na(fn)) {
+    fn <- file.choose()
+  }
+  
   d <- read.csv(fn, na.strings=c("NA", "OVRFLW"), fileEncoding="latin1")
   
   # The idea will be to read data from all instruments into a common format
