@@ -6,7 +6,7 @@
 ##' plus columns for calibrated fluorescence (in units of concentration of fluorophore) 
 ##' and associated error (plus p.value, etc). 
 ##' \textbf{Note:} I probably want to re-form these things as a list
-cal_curve <- function(d, print.plot=TRUE) {
+cal_curve <- function(d, print.plot=TRUE, print.cal.stats=TRUE) {
   
   #browser()
   
@@ -42,6 +42,11 @@ cal_curve <- function(d, print.plot=TRUE) {
   
   # Calculate slopes
   cal_curve_slopes <- ddply(mean_calibs, .(fluorophore), function(x) lm_stats(x, xvar="conc", yvar="mean_std"))
+  
+  # Output slopes
+  if (print.cal.stats) {
+    print(cal_curve_slopes)
+  }
   
   ##########
   # Merge standard curve slopes back into sample data, return data only data frame
