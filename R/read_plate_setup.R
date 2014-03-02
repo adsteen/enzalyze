@@ -1,15 +1,17 @@
 ##' Reads in plate setup worksheets
 ##' 
-##' @description For now: takes a filename, reads the file and melts it
+##' @description Parses column names for tabular fluorescence data (where rows indicate separate sampling times)
 ##' @export
 ##' 
-read_plate_setup <- function() {
+read_plate_setup <- function(d) {
   
   # New plan: 
   # 1. Get passed the raw data frame from .csv 
   # 2. Split the column names by columns
   # 3. Add a column to hte data frame for each variable from the column names. 
   #    Populate each column with data from the column names (using format "value units,")
+  #nms <- col
+  
   
 }
 

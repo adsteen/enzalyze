@@ -9,7 +9,11 @@ read_biotek <- function(fn=NA, temp.var.name="T..365.450", time.var.name="Time..
     fn <- file.choose()
   }
   
+  # Example csv "DS fictional biotek data.csv" has 3 reps of 16 concentrations of standard
+  #   and multiple concentrations (different numbers) of +enzyme and control treatments of 2 different substrates (A-AMC and B-AMC)
   d <- read.csv(fn, na.strings=c("NA", "OVRFLW"), fileEncoding="latin1")
+  
+  d_tidy <- tidy_biotek(d)
   
   # The idea will be to read data from all instruments into a common format
   # Probably in the long term this should be an object
