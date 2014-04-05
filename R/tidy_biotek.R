@@ -32,6 +32,7 @@ tidy_biotek <- function(d, temp.col="temp", time.col="Time..days.") {
     
   # Merge the datasets
   dataset <- merge(dm, names_to_parse, by="well")
+  dataset$sample.name <- as.character(dataset$sample.name)
   
   ####### 
   # Split data set into calibration and measured sets 
@@ -44,18 +45,11 @@ tidy_biotek <- function(d, temp.col="temp", time.col="Time..days.") {
   # split data frames into samples, stds
   standards <- dataset[dataset$is.std, ]
   samples <- dataset[!dataset$is.std, ]
+  all_data <- list(standards=standards, samples=samples)
   
+  #dataset$is.std <- as.factor(dataset$is.std)
+  #split_data <- dlply(dataset, "is.std", identity)# The hell is the problem here?
   
-  
-  # So my strategy here is to read in the data frame without column names
-  #    Default column names will be given: V1, V2, etc
-  # Then read the column names a second time to get the column names as values of a data frame
-  # Replace the id variables 
-  # Merge those data frames
-  # Eliminate the data frame of devault values
-  
-  
-  
+  parsed_data <- llply(all_data, parse_names)
 
-  
 }
