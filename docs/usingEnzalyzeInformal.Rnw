@@ -1,0 +1,34 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+
+\title{Processing hydrolysis rate data in R}
+\author{Drew Steen}
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\maketitle
+
+\section*{Setup}
+To get started, you'll need to install R (cran.r-project.org) and R's Integrated Development Environment (IDE), RStudio (rstudio.com). R does all the actual calculations you need, but you will only interact with RStudio - you don't need a shortcut for R on your desktop, since you'll never open it directly.
+
+Next, set up a folder on your hard drive for this project (say, \texttt{C:/documents/enzymeResearch}). Then, open up RStudio and make a new project: Choose \texttt{File, New Project, Existing Directory} and browse to your directory. 
+
+Next, set up the following new folders in your project directory: \texttt{R}, \texttt{plots}, \texttt{data}, and \texttt{reports}. (Be sure to make the capitalization identical to mine so that our scripts will work on each others' systems.) Save the file I've sent you, \texttt{lm\_stats.R}, to your \texttt{R} directory.
+
+Finally, install a few useful packages. In RStudio, go to the packages tab (lower left-hand window). Click ``Install Packages'' and type \texttt{ggplot2} in the window, and click ``Install''. Do the same for \texttt{reshape2}, \texttt{plyr}, and \texttt{lubridate}. You will only need to install each package once, but you will need to load them for each new R session. You can also install packages by typing the command \texttt{install.packages("ggplot2")} in RStudio's console window.
+
+\section*{Prepare your data file}
+Eventually, I plan to write functions that can deal with the plate reader output files directly. For now, open the .txt or Excel file from the plate reader, copy the section containing the raw data (usually starting at row 40 or so, be sure to include the row headers) into a new spreadsheet. The new spreadsheet should have column names in row A, data in rows B and further, and the data should start in column 1. Trim out any columns that don't contain useful data.
+
+Next, change the column names for time and temperature to \texttt{time} and \texttt{temp}. Finally, save the file as a .csv file.
+
+\section{Data processing}
+
+Run the following commands in R. The best way to do this is to open a new script: in Rstudio, \texttt{File - New - R Script}. Type the commands into the script, and execute them line-by-line by putting the cursor on the line you want to execute and type command-enter, or click `run'.
+
+
+
+
+
+\end{document}
