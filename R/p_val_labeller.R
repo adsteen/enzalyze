@@ -4,7 +4,7 @@
 ##' @param sigfigs The number of significant figures to which to round each p value
 ##' @param cutoff The number below which the pvalue will be reported as "p<cutoff"
 ##' @param plotmath Whether to format for plotmath or plain text. Plotmath uses "p==", which will display onscreen as "p=" if it is interpreted as plotmath
-##' @return A character vector, I think
+##' @return A character vector, I think 
 
 p_val_labeller <- function(pval, sigfigs=2, cutoff=0.001, plotmath=TRUE) {
   ##########
