@@ -22,6 +22,7 @@ lm_stats <- function(d, xvar, yvar) {
   #    finally={})
   #}
   m <- lm(d[ , yvar] ~ d[ , xvar]) # Should wrap this in a tryCatch too!
+  # Alsom improve error message if xvar or yvar arent in d
   sum_m <- summary(m)
   
   # Function to safely get the slope

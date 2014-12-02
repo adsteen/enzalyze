@@ -6,6 +6,15 @@
 \SweaveOpts{concordance=TRUE}
 \maketitle
 
+
+\section{3 March 2014 notes}
+Plan:
+\begin{itemize}
+\item Read in raw data using \texttt{read\_x} (at first, all I have is \texttt{read\_biotek}, which is really just `read wide format data with sample info encoded in column names)
+\item
+\end{itemize}
+
+
 \section{Introduction}
 
 My idea for the workflow for this package is:

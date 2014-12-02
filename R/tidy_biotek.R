@@ -1,4 +1,4 @@
-##' Puts biotek files into tidy form
+/?##' Puts biotek files into tidy form
 ##'
 ##' @description Formats raw biotek files into long form with standardized column headings
 ##' 
