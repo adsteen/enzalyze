@@ -10,7 +10,7 @@
 ##' lm_stats(mpg, xvar="cty", yvar="hwy")
 
 
-lm_stats <- function(d, xvar, yvar) {
+lm_stats <- function(d, xvar, yvar, debug=FALSE) {
   # Function to safely return the slope, intercept, slope.se, int.se, rsq, and pvalue of a linear model
   #print(d[1, ])
   
@@ -21,6 +21,11 @@ lm_stats <- function(d, xvar, yvar) {
   #    error <- NA,
   #    finally={})
   #}
+  
+  # Used for debugging
+  if(debug) {
+    browser()
+  }
   m <- lm(d[ , yvar] ~ d[ , xvar]) # Should wrap this in a tryCatch too!
   # Alsom improve error message if xvar or yvar arent in d
   sum_m <- summary(m)
