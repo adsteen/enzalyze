@@ -1,6 +1,6 @@
 \name{lm_stats}
 \alias{lm_stats}
-\title{Returns statistics for linear regressions (e.g. slope, intercept, error, etc)}
+\title{Linear Modeling and Statistics}
 \usage{
   lm_stats(d, xvar, yvar)
 }
@@ -20,11 +20,11 @@
   standard error, p value, r-squared, and number of points.
 }
 \description{
-  Returns statistics for linear regressions (e.g. slope,
-  intercept, error, etc)
+  lm_stats is intended to take in a long-form data frame and return the statistics of a linear regression built around two numeric columns designated as either the dependent or independent variables. A specific example would be a long-form data frame with numeric values for relative fluorescence units (RFU) in one column, and elapsed time in another.  Set RFU as the independent variable and elapsed time as the dependent, then the returned slope of this linear regression is the activity in units of RFU/unit-time.
 }
 \details{
-  include some details here
+  Returns statistics for linear regressions (e.g. slope,
+  intercept, error, etc)
 }
 \examples{
 require(ggplot2)

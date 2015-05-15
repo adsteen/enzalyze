@@ -3,7 +3,7 @@
 ##' @param d Data frame containing at least two numeric columns
 ##' @param xvar Numeric column to be used as the independant variable for the regression
 ##' @param yvar Numeric column to be used as the dependant variable for the regression
-##' @details include some details here
+##' @details Under the assumption that there is an existing correlation between our scalar, dependent variable and our independent variable, lm_stat models the relationship by fitting a linear regression to a scatterplot of the data
 ##' @return Returns a one-row data frame containing (at present): slope, intercept, slope standard error, intercept standard error, p value, r-squared, and number of points.
 ##' @export
 ##' require(ggplot2)
@@ -14,7 +14,7 @@ lm_stats <- function(d, xvar, yvar) {
   # Function to safely return the slope, intercept, slope.se, int.se, rsq, and pvalue of a linear model
   #print(d[1, ])
   
-  ##### CHeck that this tryCatch syntax is correct
+  ##### Check that this tryCatch syntax is correct
   #get_model <- function(m) {
   # m <- tryCatch(
   #    model <- lm(d[ , yvar] ~ d[ , xvar]),
@@ -104,6 +104,7 @@ lm_stats <- function(d, xvar, yvar) {
              pval=get_p_val(m),
              rsq = get_rsq(m),
              n=n)
+  # Might do better as a named vectpr rather than a data frame
 }
 
 

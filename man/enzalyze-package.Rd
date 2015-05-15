@@ -3,12 +3,13 @@
 \alias{enzalyze}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+Measure enzyme activities
+~~ enzalyze ~~
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+
+~~ Within enzalyze are all the tools to calculate enzyme activities.  Beginning with melting data files, of various formats, into long form and reading them as a data frame.  Then by taking that data frame, extracting the statistics from a linear regression, and utilizing that data along with data from a calibration curve (also within the package) we can calculate true enzyme activity ~~
+
 }
 \details{
 \tabular{ll}{
@@ -18,16 +19,18 @@ Version: \tab 1.0\cr
 Date: \tab 2013-09-03\cr
 License: \tab What license is it under?\cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
+~~ DELETE AFTER YOU ADD OTHER FUNCTION DESCRIPTIONS - An overview of how to use the package, including the most important functions ~~
+~~ lm_stats : create a linear model between a designated dependent and independent variable, from a long-form data frame, and return the regression statistics (i.e slope, intercept, error, etc) ~~
 }
 \author{
-Who wrote it
+Asst. Professor Andrew Steen
+(with help from Josh Gurka)
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Maintainer: Josh Gurka <jgurka@vols.utk.edu>
+~~ Andrew Steen & Josh Gurka ~~
 }
 \references{
-~~ Literature or other references for background information ~~
+~~ Advanced R, Hadley Wickham ~~
 }
 \keyword{ package }
 \seealso{
