@@ -11,18 +11,17 @@
 
 
 lm_stats <- function(d, xvar, yvar) {
-  # Function to safely return the slope, intercept, slope.se, int.se, rsq, and pvalue of a linear model
-  #print(d[1, ])
-  
-  ##### Check that this tryCatch syntax is correct
-  #get_model <- function(m) {
-  # m <- tryCatch(
-  #    model <- lm(d[ , yvar] ~ d[ , xvar]),
-  #    error <- NA,
-  #    finally={})
-  #}
-  m <- lm(d[ , yvar] ~ d[ , xvar]) # Should wrap this in a tryCatch too!
-  sum_m <- summary(m)
+ 
+  # Check with Drew, what do we want the trycatch to return (or not return) if theres an error
+  get_lm <- function(d){
+    m <- tryCatch(
+      m <- lm(d[ , yvar] ~ d[ , xvar]),
+      error=function(cond) return(NA),
+      warning=function(cond) return(m),
+      finally = {}
+    )
+    sum_m <- summary(m)
+  }
   
   # Function to safely get the slope
   get_slope <- function(m) {
