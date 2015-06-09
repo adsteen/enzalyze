@@ -4,7 +4,7 @@
 ##' @param x - file name of data set (.csv)
 ##' @param n - number of rows to read as data frame from text file
 ##' @param d - horizontal data frame
-##' @return 
+##' @return ***put something here***
 
 tidy_biotek <- function(x, n, d, temp.col="temp", time.col="Time..days.") {
   

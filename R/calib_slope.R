@@ -21,7 +21,7 @@ calib_slope <- function(d, xvar="conc.AMC.nM", yvar="RFU"){
   }
   
   # Get the slope of the model
-  slope <- coef(model)[2]
+  cal_slopes <- coef(model)[2]
  
   # d_stats <- lm_stats(d, "xvar", "yvar")
   # the_slope <- d_stats["slope"]

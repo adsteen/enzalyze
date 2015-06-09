@@ -9,10 +9,11 @@
 #' @export
 
 # this is a rough draft of the default variables, check with typical raw data structures
-enzalyze_reform <- function(d, id = c("location", "rep", "treatment", "substrate"), var = "well", val = "fluorescence", the.date=NULL){
+enzalyze_reform <- function(d, id = c("rep", "treatment", "substrate"), var = "well", 
+                            val = "fluorescence", the.date=NULL){
   
   # melt the data frame into long form
-  datm <- melt(dat, id.vars= id, variable.name= var, value.name=val)
+  datm <- melt(d, id.vars= id, variable.name= var, value.name=val)
   
   # Process system date
   if(is.null(the.date)) {
@@ -23,11 +24,11 @@ enzalyze_reform <- function(d, id = c("location", "rep", "treatment", "substrate
   # paste concatenates our character vector "the.date" together with our numeric vector "time" from datm
   # ymd_hms converts our date-time vector to an object
   # then we store these objects into a new column in datm
-  d$Rtime <- ymd_hms(paste(the.date, datm$time))
+  datm$Rtime <- ymd_hms(paste(the.date, datm$time))
   
-  # calculate elapsed time as a numeric vector and store it in a new column of d
-  d$elapsed <- as.numeric(d$Rtime - min(d$Rtime))
+  # calculate elapsed time as a numeric vector and store it in a new column of datm
+  datm$elapsed <- as.numeric(d$Rtime - min(d$Rtime))
   
   # Attributes a unit to our numeric objects
-  attr(d$elapsed, "units") <- "seconds"
+  attr(datm$elapsed, "units") <- "seconds"
 }

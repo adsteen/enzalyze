@@ -6,12 +6,13 @@
 ##' @details Under the assumption that there is an existing correlation between our scalar, dependent variable and our independent variable, lm_stat models the relationship by fitting a linear regression to a scatterplot of the data
 ##' @return Returns a one-row data frame containing (at present): slope, intercept, slope standard error, intercept standard error, p value, r-squared, and number of points.
 ##' @export
-##' require(ggplot2)
-##' lm_stats(mpg, xvar="cty", yvar="hwy")
+# require(ggplot2)
+# lm_stats(mpg, xvar="cty", yvar="hwy")
 
 
 lm_stats <- function(d, xvar, yvar) {
  
+  # Is this also a function of xvar and yvar?
   # Check with Drew, what do we want the trycatch to return (or not return) if theres an error
   get_lm <- function(d){
     m <- tryCatch(
@@ -103,7 +104,7 @@ lm_stats <- function(d, xvar, yvar) {
              pval=get_p_val(m),
              rsq = get_rsq(m),
              n=n)
-  # Might do better as a named vectpr rather than a data frame
+  # Might do better as a named vector rather than a data frame
 }
 
 
