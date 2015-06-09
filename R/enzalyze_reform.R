@@ -9,8 +9,10 @@
 #' @export
 
 # this is a rough draft of the default variables, check with typical raw data structures
-enzalyze_reform <- function(d, id = c("rep", "treatment", "substrate"), var = "well", 
+enzalyze_reform <- function(d, id = c("rep", "treatment", "substrate"), var = "substrate", 
                             val = "fluorescence", the.date=NULL){
+
+  browser()
   
   # melt the data frame into long form
   datm <- melt(d, id.vars= id, variable.name= var, value.name=val)

@@ -1,0 +1,121 @@
+---
+title: "enzalyze"
+author: "Josh Gurka"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{enzalyze}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r load_packages,echo=FALSE}
+library(devtools)
+library(plyr)
+library(ggplot2)
+library(reshape2)
+library(lubridate)
+```
+
+`enzalye` is a package designed for the use of Professor Drew Steen's lab, and the biogeoscience community as a whole.  It's primary function; `activity` takes a dataset of raw, uncalibrated data, as well as the data for the respective calibration curve, finds the slope of both linear models, and calculates the activity of the enzymes by dividing the slopes of the uncalibrated models by the slope of the calibration curve.  
+
+Critical functions within the package include; 
+1. `activity` - Calculates the activity of enzymes from raw datasets.
+2. `read_long` - Reads a dataset as a data frame in long form.
+3. `enzalyze_reform` - Melts the data frame, calculates, and inserts elapsed time values into a new column of the data frame.
+4. `uncalib_slope` - Calculates the uncalibrated slope of every unique combination of the id-variables.
+5. `lm_stats` - Returns statistics for linear regressions (e.g. slope, intercept, error, etc).
+6. `calib_slope` - Calculates the slope of a calibration curve.
+
+# `activity`
+
+This is the primary function of `enzalyze` and although the other functions (ie. `read_long`, `enzalyze_reshape`, etc) can be used individually, they are designed to culminate into `activity`.
+
+### Installation
+
+Be sure that `devtools` (and all other packages from the _Imports_ list downloaded successfully; see _DESCRIPTION_) and then to install enzalyze, run
+
+```{r install_enzalyze, eval=FALSE}
+install_github("joshgurka/enzalyze")
+```
+
+### Parameters
+
+```{r activity_params, eval=FALSE, warning=FALSE, message=FALSE}
+activity <- function(uncal, cal, .id = c("rep", "treatment", "substrate"), .var = "well",
+                     .val = "fluorescence", .the.date = NULL, .id.var = 
+                       c("rep", "treatment", "substrate"), .xvar = "elapsed",
+                     .yvar = "RFU", d, xvar="conc.AMC.nM")
+```
+
+The first two parameters come into play with the function `read_long`.  __uncal__ & __cal__ represent your uncalibrated and calibrated data sets respectively, formatted as a .csv file.
+
+## `read_long`
+
+`read_long` takes in a .csv-formatted data set and reads it as a data frame in long form for further data analysis.
+
+```{r read_long}
+d_uncal <- read_long("uncalib_curve.csv")
+```
+
+`read_long` creates a filename with a path from the original filename by converting our object "x" and concatenating it with "data" as one character vector.  So be sure that the input file is stored in the `data` file of your working directory.
+
+## `enzalyze_reform`
+
+This function takes the data frame from the `read_long` step, melts it, calculates and inserts elapsed times, and inserts these times into a new column of the data frame.
+
+The parameters of `activity` that pertain to this sub-function include; `.id, .var, .val, and .the.date`
+
+At the moment our data frame looks like this:
+
+```{r head_dUNCAL}
+head(d_uncal)
+```
+
+after it is put through the `enzalyze_reform` step, it will have elapsed times calculated and placed in a new column.  Like so;
+
+```{r enzalyze_reform, message=FALSE}
+dm_uncal <- enzalyze_reform(d = d_uncal, id = c("rep", "treatment", "substrate"), var = .var, val = "fluorescence", the.date = NULL)
+head(dm_uncal)
+```
+
+## `uncalib_slope`
+
+
+
+## Styles
+
+The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+
+    output: 
+      rmarkdown::html_vignette:
+        css: mystyles.css
+
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))

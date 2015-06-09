@@ -24,11 +24,11 @@ activity <- function(uncal, cal, .id = c("rep", "treatment", "substrate"), .var 
   
   # Then the output data frame of read_long is "dat", so we set that as the new input
   #    parameter for enzalyze_reform; "d"
-  enzalyze_reform(d = d_uncal, id = .id, var = .var, val = .val, the.date = .the.date)
+  dm_uncal <- enzalyze_reform(d = d_uncal, id = .id, var = .var, val = .val, the.date = .the.date)
   
   # The output parameter from enzalyze_reform; "datm", is redirected as the input data 
   #   frame for uncalib_slope
-  uncalib_slope(d = datm, id.var = .id.var, xvar = .xvar,
+  uncalib_slope(d = dm_uncal, id.var = .id.var, xvar = .xvar,
                 yvar = .yvar)
   # The output is a data frame called "uncal_slopes"
   
@@ -38,11 +38,11 @@ activity <- function(uncal, cal, .id = c("rep", "treatment", "substrate"), .var 
   d_cal <- read_long(x = cal)
   
   # redirect the output dataframe to the function; calib_slope
-  calib_slope(d = d_cal, xvar = xvar, yvar = .yvar)
+  calib_slopes <- calib_slope(d = d_cal, xvar = xvar, yvar = .yvar)
   # the output data frame is under the name; "cal_slopes"
   
   # To find the true activity, divide the dataframe for uncalibrated slopes by the slope
   #   of the calibration curve
-  a <- uncal_slopes / cal_slopes
+  a <- uncal_slopes / calib_slopes
   a
 }
