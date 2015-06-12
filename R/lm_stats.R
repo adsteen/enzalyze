@@ -12,17 +12,20 @@
 
 lm_stats <- function(d, xvar, yvar) {
  
+  browser()
   # Is this also a function of xvar and yvar?
   # Check with Drew, what do we want the trycatch to return (or not return) if theres an error
-  get_lm <- function(d){
-    m <- tryCatch(
-      m <- lm(d[ , yvar] ~ d[ , xvar]),
-      error=function(cond) return(NA),
-      warning=function(cond) return(m),
-      finally = {}
-    )
-    sum_m <- summary(m)
-  }
+#   get_lm <- function(d){
+#     m <- tryCatch(
+#       m <- lm(d[ , yvar] ~ d[ , xvar]),
+#       error=function(cond) return(NA),
+#       warning=function(cond) return(m),
+#       finally = {}
+#     )
+#     sum_m <- summary(m)
+#   }
+  m <- lm(d[ , yvar] ~ d[ , xvar])
+  sum_m <- summary(m)
   
   # Function to safely get the slope
   get_slope <- function(m) {

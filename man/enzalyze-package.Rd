@@ -30,17 +30,17 @@ License: \tab MIT: Copyright (C) 2013 Andrew D. Steen. Permission is hereby gran
   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
   OTHER DEALINGS IN THE SOFTWARE.\cr
 }
-~~ read_long : read a raw dataset as a data frame in long form, and omit any NA values ~~
+~~ read_long : reads a raw dataset as a data frame, and omits any NA values ~~
 
-~~ enzalyze_reform : melts an input data frame by a vector of non-measured variables, calculates and inserts elapsed time values along with a character vector for the current date into new columns of the long-form data frame ~~
+~~ enzalyze_reform : Replaces numeric substrate labels with character sting names. Then calculates and inserts elapsed time values along with a character vector for the current date into new columns of the long-form data frame ~~
 
 ~~ uncalib_slope : split the data frame by specified id-variables and apply the lm_stats function to calculate linear regression statistics, then return the result in a data frame ~~
 
-~~ lm_stats : create a linear model between a designated dependent and independent variable, from a long-form data frame, and return the regression statistics (i.e slope, intercept, error, etc) ~~
+~~ lm_stats : create a linear model between a designated dependent and independent variable, from a long-form data frame, and returns the regression statistics (i.e slope, intercept, error, etc) ~~
 
 ~~ calib_slope : Calculate the slope of the calibration curve (in units of RFU per nM-AMC per L) by creating a linear model of the concentration and relative fluorescence, and extracting the slopes ~~
 
-~~ activity : Calculates the true activity (in units of molarity per time) by finding the slope of the uncalibrated & calibrated curves as a data frame, then dividing them to get a one-row data frame representing the activity ~~
+~~ activity : Calculates the true activity (in units of moles of substrate converted per unit time) by finding the slope of the uncalibrated & calibrated curves as a data frame, then dividing them to get a one-row data frame representing the activity ~~
 }
 \author{
 Asst. Professor Andrew Steen

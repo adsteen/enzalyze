@@ -4,21 +4,17 @@
 \alias{activity}
 \title{Activity of enzymes}
 \usage{
-activity(uncal, cal, .id = c("rep", "treatment", "substrate"),
-  .var = "well", .val = "fluorescence", .the.date = NULL,
-  .id.var = c("rep", "treatment", "substrate"), .xvar = "elapsed",
-  .yvar = "RFU", d, xvar = "conc.AMC.nM")
+activity(uncal, cal, substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC",
+  "Pyr-AMC", "GlyGlyArg-AMC"), .the.date = NULL, .id.var = c("rep",
+  "treatment", "substrate"), .xvar = "elapsed", .yvar = "RFU", d,
+  xvar = "conc.AMC.nM")
 }
 \arguments{
 \item{uncal}{Raw dataset, of uncalibrated activity, in textfile form}
 
 \item{cal}{Raw dataset containing the calibration curve}
 
-\item{.id}{Vector of non-measured variables to melt the data frame by}
-
-\item{.var}{Name of variable used to store measured variable names}
-
-\item{.val}{Variable used to store values}
+\item{substrates}{Character string label to replace numeric label of substrates in data}
 
 \item{.the.date}{The date the data was gathered (default will print the current date)}
 

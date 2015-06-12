@@ -2,24 +2,22 @@
 % Please edit documentation in R/enzalyze_reform.R
 \name{enzalyze_reform}
 \alias{enzalyze_reform}
-\title{Melt and reshape}
+\title{Name substrates & calculate elapsed time}
 \usage{
-enzalyze_reform(d, id = c("rep", "treatment", "substrate"), var = "well",
-  val = "fluorescence", the.date = NULL)
+enzalyze_reform(d, .labels = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC",
+  "GlyGlyArg-AMC"), the.date = NULL)
 }
 \arguments{
 \item{d}{- input data frame (in long form)}
 
-\item{id}{- vector of non-measured variables to be fed into the melt function}
+\item{.labels}{- character string replacement for numeric labels of substrates}
 
-\item{var}{- name of variable used to store measured variable names}
-
-\item{val}{- variable used to store values}
+\item{the.date}{- date.  Default results in the system date being called and used}
 }
 \value{
 returns the input data frame with two additional columns; one for the date-time object, and one for the calculated elapsed time (as a numeric vector)
 }
 \description{
-Melt the data frame, calculate, and insert elapsed times into a long-form data frame
+Relabel the substrates in the data frame, then calculate and insert elapsed times into a new column of the data frame
 }
 

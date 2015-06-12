@@ -1,36 +1,38 @@
-#' Melt and reshape
+#' Name substrates & calculate elapsed time
 #' 
-#' Melt the data frame, calculate, and insert elapsed times into a long-form data frame
+#' Relabel the substrates in the data frame, then calculate and insert elapsed times into a new column of the data frame
 #' @param d - input data frame (in long form)
-#' @param id - vector of non-measured variables to be fed into the melt function
-#' @param var - name of variable used to store measured variable names
-#' @param val - variable used to store values
+#' @param .labels - character string replacement for numeric labels of substrates
+#' @param the.date - date.  Default results in the system date being called and used
 #' @return returns the input data frame with two additional columns; one for the date-time object, and one for the calculated elapsed time (as a numeric vector)
 #' @export
 
 # this is a rough draft of the default variables, check with typical raw data structures
-enzalyze_reform <- function(d, id = c("rep", "treatment", "substrate"), var = "substrate", 
-                            val = "fluorescence", the.date=NULL){
+enzalyze_reform <- function(d, .labels = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC"),
+                            the.date = NULL){
 
-  browser()
+  # browser()
+  # Convert the subtrate numbers into names of substrate
+  d$substrate <- factor(as.character(d$substrate), labels = .labels)
   
-  # melt the data frame into long form
-  datm <- melt(d, id.vars= id, variable.name= var, value.name=val)
-  
-  # Process system date
-  if(is.null(the.date)) {
-    today <- Sys.Date()
-    the.date <- as.character(today)
-  }
+ 
+  # Process system date with custom date function
+ the.date <- the_date(the.date = NULL)
   
   # paste concatenates our character vector "the.date" together with our numeric vector "time" from datm
   # ymd_hms converts our date-time vector to an object
-  # then we store these objects into a new column in datm
-  datm$Rtime <- ymd_hms(paste(the.date, datm$time))
+  # then we store these objects into a new column in d
+ # Note: need a try catch for whether the data format has seconds.  This parses data for hm
+ #   format not hms
+  d$Rtime <- ymd_hm(paste(the.date, d$time))
   
-  # calculate elapsed time as a numeric vector and store it in a new column of datm
-  datm$elapsed <- as.numeric(d$Rtime - min(d$Rtime))
+  # calculate elapsed time as a numeric vector and store it in a new column of d
+  d$elapsed <- as.numeric(d$Rtime - min(d$Rtime))
   
   # Attributes a unit to our numeric objects
-  attr(datm$elapsed, "units") <- "seconds"
+  # d$elapsed <- attr(d$elapsed, "units") <- "seconds"
+  attr(d$elapsed, "units") <- "seconds"
+  
+  # Return the data frame
+  d
 }

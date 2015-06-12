@@ -17,9 +17,10 @@ uncalib_slope(d, id.var = c("rep", "treatment", "substrate"),
 \item{yvar}{- dependent variable for the linear model}
 }
 \value{
-data frame containing the slope of each unique combination of id-variables
+data frame containing the linear regression statistics for each combination of id-variables
 }
 \description{
-Calculate the uncalibrated slope of each combination of id-variables (in units of RFU/hr)
+Calculate the linear regression statistics, from the uncalibrated data, for each unique
+combination of id-variables, including the uncalibrated slopes (in units of RFU/hr)
 }
 

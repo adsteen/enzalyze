@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_long.R
 \name{read_long}
 \alias{read_long}
-\title{Read raw data set in long form}
+\title{Read raw data set as a data frame}
 \usage{
 read_long(x)
 }

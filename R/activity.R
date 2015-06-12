@@ -3,9 +3,7 @@
 ##' Calculates enzymatic activity from a raw, uncalibrated dataset and a calibration curve
 ##' @param uncal Raw dataset, of uncalibrated activity, in textfile form
 ##' @param cal Raw dataset containing the calibration curve
-##' @param .id Vector of non-measured variables to melt the data frame by
-##' @param .var Name of variable used to store measured variable names
-##' @param .val Variable used to store values
+##' @param substrates Character string label to replace numeric label of substrates in data
 ##' @param .the.date The date the data was gathered (default will print the current date)
 ##' @param .id.var Vector of variables by which to split input data frame by, before applying lm_stats to calculate slope values
 ##' @param .xvar Independent variable for the uncalibrated linear model
@@ -14,8 +12,8 @@
 ##' @return One-row data frame containing the activity of enzymes
 ##' @export
 
-activity <- function(uncal, cal, .id = c("rep", "treatment", "substrate"), .var = "well",
-                     .val = "fluorescence", .the.date = NULL, .id.var = 
+activity <- function(uncal, cal, substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC"), 
+                     .the.date = NULL, .id.var = 
                        c("rep", "treatment", "substrate"), .xvar = "elapsed",
                      .yvar = "RFU", d, xvar="conc.AMC.nM"){
   
@@ -24,13 +22,12 @@ activity <- function(uncal, cal, .id = c("rep", "treatment", "substrate"), .var 
   
   # Then the output data frame of read_long is "dat", so we set that as the new input
   #    parameter for enzalyze_reform; "d"
-  dm_uncal <- enzalyze_reform(d = d_uncal, id = .id, var = .var, val = .val, the.date = .the.date)
+  dr_uncal <- enzalyze_reform(d = d_uncal, .labels = substrates, the.date = .the.date)
   
-  # The output parameter from enzalyze_reform; "datm", is redirected as the input data 
+  # The output parameter from enzalyze_reform; "d", is redirected as the input data 
   #   frame for uncalib_slope
-  uncalib_slope(d = dm_uncal, id.var = .id.var, xvar = .xvar,
+  lm_dframe <- uncalib_slope(d = dr_uncal, id.var = .id.var, xvar = .xvar,
                 yvar = .yvar)
-  # The output is a data frame called "uncal_slopes"
   
   ####
   #Now we need to produce a data frame to represent the slope of the calibration curve
@@ -38,11 +35,9 @@ activity <- function(uncal, cal, .id = c("rep", "treatment", "substrate"), .var 
   d_cal <- read_long(x = cal)
   
   # redirect the output dataframe to the function; calib_slope
-  calib_slopes <- calib_slope(d = d_cal, xvar = xvar, yvar = .yvar)
-  # the output data frame is under the name; "cal_slopes"
+  cal_slope <- calib_slope(d = d_cal, xvar = xvar, yvar = .yvar)
   
-  # To find the true activity, divide the dataframe for uncalibrated slopes by the slope
-  #   of the calibration curve
-  a <- uncal_slopes / calib_slopes
-  a
+  lm_dframe$v0 <- lm_dframe$slope / cal_slope
+  lm_dframe$v0.se <- lm_dframe$slope.se / cal_slope
+  
 }

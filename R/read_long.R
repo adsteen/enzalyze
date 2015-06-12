@@ -1,4 +1,4 @@
-#' Read raw data set in long form
+#' Read raw data set as a data frame
 #' 
 #' Take in a raw data set, read as a data frame
 #' @param x - raw dataset in textfile form
@@ -12,7 +12,6 @@ read_long <- function(x){
   
   # omit any NA values and read the textfile as a data frame
   fn <- na.omit(fn)
-  read.csv(fn)
+  d <- read.csv(fn)
 
 }
-
