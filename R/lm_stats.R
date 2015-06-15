@@ -99,15 +99,16 @@ lm_stats <- function(d, xvar, yvar) {
   
   n <- nrow(d[!is.na(d[ , xvar]) & !is.na(d[ , yvar]), ]) # I can't really think of how this would throw errors
   
-  # Return the parameters in a 1-row data frame (the most convenient format for plyr functions)
-  data.frame(slope = get_slope(m), 
-             int = get_int(m), 
-             slope.se=get_slope.se(m), 
-             int.se=get_int.se(m), 
-             pval=get_p_val(m),
-             rsq = get_rsq(m),
-             n=n)
-  # Might do better as a named vector rather than a data frame
+#   # Return the parameters in a 1-row data frame (the most convenient format for plyr functions)
+#   data.frame(slope = get_slope(m), 
+#              int = get_int(m), 
+#              slope.se=get_slope.se(m), 
+#              int.se=get_int.se(m), 
+#              pval=get_p_val(m),
+#              rsq = get_rsq(m),
+#              n=n)
+
+  
 }
 
 

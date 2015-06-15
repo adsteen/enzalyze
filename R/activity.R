@@ -15,8 +15,9 @@
 activity <- function(uncal, cal, substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC"), 
                      .the.date = NULL, .id.var = 
                        c("rep", "treatment", "substrate"), .xvar = "elapsed",
-                     .yvar = "RFU", d, xvar="conc.AMC.nM"){
+                     .yvar = "RFU", xvar="conc.AMC.nM"){
   
+  browser()
   # We want the input parameter "uncal" to match the parameter "x" of read_long
   d_uncal <- read_long(x = uncal)
   

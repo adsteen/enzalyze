@@ -19,7 +19,7 @@ enzalyze_reform <- function(d, .labels = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr
   
 #   d$RFU <- format(d$RFU, big.mark = "", scientific = FALSE)
   # other option:
-  d$RFU <- as.numeric(gsub(",", "", d$RFU))
+  d[ , "RFU"] <- as.numeric(gsub(",", "", d$RFU))
  
   # Process system date with custom date function
  the.date <- the_date(the.date = NULL)

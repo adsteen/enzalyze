@@ -10,21 +10,23 @@
 calib_slope <- function(d, xvar="conc.AMC.nM", yvar="RFU"){
   
   # safeguard the calculation of slopes
-  get_model <- function(d, xvar=xvar, yvar=yvar) {
-    model <- tryCatch(
-      model <- lm(d[ , xvar] ~ d[ , yvar]),
-      error=function(cond) return(NA),
-      warning=function(cond) return(model),
-      finally = {}
-    )
-    return(model)
-  }
-  
-  # Get the slope of the model
-  cal_slopes <- coef(model)[2]
+#   get_model <- function(d, xvar=xvar, yvar=yvar) {
+#     model <- tryCatch(
+#       model <- lm(d[ , xvar] ~ d[ , yvar]),
+#       error=function(cond) return(NA),
+#       warning=function(cond) return(model),
+#       finally = {}
+#     )
+#     return(model)
+#   }
  
-  # d_stats <- lm_stats(d, "xvar", "yvar")
-  # the_slope <- d_stats["slope"]
-  # or would it be...
-  # the_slope <- lm_stats["slope"]
+ 
+  d$"RFU" <- as.numeric(gsub(",", "", d$"RFU"))
+  model <- lm_stats(d = d, xvar = xvar, yvar = yvar)
+  # Get the slope of the model
+  cal_slopes <- model["slope"]
+  cal_slopes
+  browser()
+ 
+
 }

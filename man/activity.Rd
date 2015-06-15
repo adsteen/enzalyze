@@ -6,7 +6,7 @@
 \usage{
 activity(uncal, cal, substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC",
   "Pyr-AMC", "GlyGlyArg-AMC"), .the.date = NULL, .id.var = c("rep",
-  "treatment", "substrate"), .xvar = "elapsed", .yvar = "RFU", d,
+  "treatment", "substrate"), .xvar = "elapsed", .yvar = "RFU",
   xvar = "conc.AMC.nM")
 }
 \arguments{
