@@ -12,7 +12,8 @@
 uncalib_slope <- function(d, id.var = c("rep", "treatment", "substrate"), xvar = "elapsed", yvar = "RFU"){
   
   # split a data frame by the specified id-variables and apply lm_stats, then return the result in a data frame
-  lm_dframe <- ddply(.data = d, .variables = id.var, function(x) lm_stats(d = x, xvar, yvar))
+  lm_dframe <- ddply(d, .variables = id.var,
+                     .fun = "lm_stats", xvar = "elapsed", yvar = "RFU")
   
   lm_dframe
   

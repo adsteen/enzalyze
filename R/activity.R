@@ -17,7 +17,6 @@ activity <- function(uncal, cal, substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC",
                        c("rep", "treatment", "substrate"), .xvar = "elapsed",
                      .yvar = "RFU", xvar="conc.AMC.nM"){
   
-  browser()
   # We want the input parameter "uncal" to match the parameter "x" of read_long
   d_uncal <- read_long(x = uncal)
   
@@ -40,5 +39,7 @@ activity <- function(uncal, cal, substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC",
   
   lm_dframe$v0 <- lm_dframe$slope / cal_slope
   lm_dframe$v0.se <- lm_dframe$slope.se / cal_slope
+  
+  lm_dframe
   
 }

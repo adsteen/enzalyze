@@ -26,7 +26,6 @@ calib_slope <- function(d, xvar="conc.AMC.nM", yvar="RFU"){
   # Get the slope of the model
   cal_slopes <- model["slope"]
   cal_slopes
-  browser()
  
 
 }
