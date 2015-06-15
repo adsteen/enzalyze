@@ -108,7 +108,8 @@ lm_stats <- function(d, xvar, yvar) {
 #              rsq = get_rsq(m),
 #              n=n)
 
-  
+  c("slope"=get_slope(m), "int"=get_int(m), "slope.se"=get_slope.se(m),
+    "int.se"=get_int.se(m), "pval"=get_p_val(m), "rsq"=get_rsq(m), "n"=n)
 }
 
 
