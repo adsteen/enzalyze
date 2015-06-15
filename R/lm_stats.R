@@ -12,7 +12,7 @@
 
 lm_stats <- function(d, xvar, yvar) {
  
-  browser()
+  # browser()
   # Is this also a function of xvar and yvar?
   # Check with Drew, what do we want the trycatch to return (or not return) if theres an error
 #   get_lm <- function(d){
