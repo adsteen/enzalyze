@@ -21,7 +21,7 @@ calib_slope <- function(d, xvar="conc.AMC.nM", yvar="RFU"){
 #   }
  
  
-  d$"RFU" <- as.numeric(gsub(",", "", d$"RFU"))
+  # d[ , "RFU"] <- as.numeric(gsub(",", "", d[ ,"RFU"]))
   model <- lm_stats(d = d, xvar = xvar, yvar = yvar)
   # Get the slope of the model
   cal_slopes <- model["slope"]

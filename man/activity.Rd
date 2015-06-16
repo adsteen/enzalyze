@@ -4,7 +4,7 @@
 \alias{activity}
 \title{Activity of enzymes}
 \usage{
-activity(uncal, cal, substrates, .the.date = NULL,
+activity(uncal, cal, site.code = NULL, substrates, .the.date = NULL,
   design.variables = c("rep", "treatment", "substrate"),
   time.variable = "elapsed", fluorescence.variable = "RFU",
   concentration.variable = "conc.AMC.nM", print.plot = FALSE,
