@@ -4,10 +4,12 @@
 \alias{activity}
 \title{Activity of enzymes}
 \usage{
-activity(uncal, cal, substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC",
-  "Pyr-AMC", "GlyGlyArg-AMC"), .the.date = NULL, .id.var = c("rep",
-  "treatment", "substrate"), .xvar = "elapsed", .yvar = "RFU",
-  xvar = "conc.AMC.nM")
+activity(uncal, cal, substrates, .the.date = NULL,
+  design.variables = c("rep", "treatment", "substrate"),
+  time.variable = "elapsed", fluorescence.variable = "RFU",
+  concentration.variable = "conc.AMC.nM", print.plot = FALSE,
+  save.plot = FALSE, plot.filename = NULL, save.datafile = FALSE,
+  datafile.filename = NULL)
 }
 \arguments{
 \item{uncal}{Raw dataset, of uncalibrated activity, in textfile form}

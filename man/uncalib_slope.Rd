@@ -5,16 +5,16 @@
 \title{Uncalibrated Slope}
 \usage{
 uncalib_slope(d, id.var = c("rep", "treatment", "substrate"),
-  xvar = "elapsed", yvar = "RFU")
+  time.var = "elapsed", fluorescence = "RFU")
 }
 \arguments{
 \item{d}{- data frame to be fed to plyr and lm_stats functions}
 
-\item{id.var}{- variables to split input data frame by before applying lm_stats for the slope}
+\item{id.var}{- variables to split input data frame by before applying the `lm_stats` function}
 
-\item{xvar}{- independent variable for the linear model}
+\item{time.var}{- independent variable for the linear model, representing the time label for the model (i.e "minutes", "seconds", "elapsed")}
 
-\item{yvar}{- dependent variable for the linear model}
+\item{fluorescence}{- dependent variable for the linear model, representing the units of fluorescence from data collection}
 }
 \value{
 data frame containing the linear regression statistics for each combination of id-variables
