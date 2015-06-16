@@ -12,10 +12,11 @@
 ##' @return One-row data frame containing the activity of enzymes
 ##' @export
 
-activity <- function(uncal, cal, substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC"), 
-                     .the.date = NULL, .id.var = 
-                       c("rep", "treatment", "substrate"), .xvar = "elapsed",
-                     .yvar = "RFU", xvar="conc.AMC.nM"){
+activity <- function(uncal, cal, substrates, .the.date = NULL, design.variables = 
+                       c("rep", "treatment", "substrate"), time.variable = "elapsed",
+                     fluorescence.variable = "RFU", concentration.variable = "conc.AMC.nM",
+                     print.plot = FALSE, save.plot = FALSE,
+                     plot.filename = NULL, save.datafile = FALSE, datafile.filename = NULL){
   
   # We want the input parameter "uncal" to match the parameter "x" of read_long
   d_uncal <- read_long(x = uncal)
@@ -26,8 +27,8 @@ activity <- function(uncal, cal, substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC",
   
   # The output parameter from enzalyze_reform; "d", is redirected as the input data 
   #   frame for uncalib_slope
-  lm_dframe <- uncalib_slope(d = dr_uncal, id.var = .id.var, xvar = .xvar,
-                yvar = .yvar)
+  lm_dframe <- uncalib_slope(d = dr_uncal, id.var = design.variables, time.var = time.variable,
+                fluorescence = fluorescence.variable)
   
   ####
   #Now we need to produce a data frame to represent the slope of the calibration curve
@@ -35,7 +36,7 @@ activity <- function(uncal, cal, substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC",
   d_cal <- read_long(x = cal)
   
   # redirect the output dataframe to the function; calib_slope
-  cal_slope <- calib_slope(d = d_cal, xvar = xvar, yvar = .yvar)
+  cal_slope <- calib_slope(d = d_cal, xvar = concentration.variable, yvar = fluorescence.variable)
   
   lm_dframe$v0 <- lm_dframe$slope / cal_slope
   lm_dframe$v0.se <- lm_dframe$slope.se / cal_slope
