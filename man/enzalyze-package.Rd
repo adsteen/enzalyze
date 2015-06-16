@@ -3,7 +3,7 @@
 \alias{enzalyze}
 \docType{package}
 \title{
-Measure enzyme activities
+A package for quantifying enzyme activity using fluorogenic substrates
 ~~ enzalyze ~~
 }
 \description{
@@ -40,7 +40,7 @@ License: \tab MIT: Copyright (C) 2013 Andrew D. Steen. Permission is hereby gran
 
 ~~ calib_slope : Calculate the slope of the calibration curve (in units of RFU per nM-AMC per L) by creating a linear model of the concentration and relative fluorescence, and extracting the slopes ~~
 
-~~ activity : Calculates the true activity (in units of moles of substrate converted per unit time) by finding the slope of the uncalibrated & calibrated curves as a data frame, then dividing them to get a one-row data frame representing the activity ~~
+~~ find_activity : Calculates the true activity (in units of moles of substrate converted per unit time) by finding the slope of the uncalibrated & calibrated curves as a data frame, then dividing them to get a one-row data frame representing the activity ~~
 }
 \author{
 Asst. Professor Andrew Steen
@@ -58,5 +58,7 @@ Maintainer: Josh Gurka <jgurka@vols.utk.edu>
 ~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
 }
 \examples{
-~~ activity(uncalib_curve.csv, calib_curve.csv) ~~
+~~ find_activity("uncalib_curve.csv", "calib_curve.csv",
+         substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC"), 
+         site.code = "testtest", print.plot = TRUE) ~~
 }

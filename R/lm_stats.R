@@ -4,7 +4,7 @@
 ##' @param xvar Numeric column to be used as the independant variable for the regression
 ##' @param yvar Numeric column to be used as the dependant variable for the regression
 ##' @details Under the assumption that there is an existing correlation between our scalar, dependent variable and our independent variable, lm_stat models the relationship by fitting a linear regression to a scatterplot of the data
-##' @return Returns a one-row data frame containing (at present): slope, intercept, slope standard error, intercept standard error, p value, r-squared, and number of points.
+##' @return Returns a vector containing (at present): slope, intercept, slope standard error, intercept standard error, p value, r-squared, and number of points.
 ##' @export
 # require(ggplot2)
 # lm_stats(mpg, xvar="cty", yvar="hwy")
@@ -12,7 +12,6 @@
 
 lm_stats <- function(d, xvar, yvar) {
  
-  # browser()
   # Is this also a function of xvar and yvar?
   # Check with Drew, what do we want the trycatch to return (or not return) if theres an error
 #   get_lm <- function(d){
@@ -108,6 +107,8 @@ lm_stats <- function(d, xvar, yvar) {
 #              rsq = get_rsq(m),
 #              n=n)
 
+  
+  # return regression statistics as a vector instead of a data frame.  Works better with other functions in enzalyze
   c("slope"=get_slope(m), "int"=get_int(m), "slope.se"=get_slope.se(m),
     "int.se"=get_int.se(m), "pval"=get_p_val(m), "rsq"=get_rsq(m), "n"=n)
   

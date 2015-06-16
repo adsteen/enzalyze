@@ -11,14 +11,12 @@
 enzalyze_reform <- function(d, .labels = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC"),
                             the.date = NULL){
 
-  # browser()
   # Convert the subtrate numbers into names of substrate
   # This needs to not be hardcoded as the "substrate" column. potential for easy error such as 
   #   titling column as "Substrate"
   d$substrate <- factor(as.character(d$substrate), labels = .labels)
   
-#   d$RFU <- format(d$RFU, big.mark = "", scientific = FALSE)
-  # other option:
+  # Convert fluorescence units to a numeric value so we can use them with the binary operations later
   d[ , "RFU"] <- as.numeric(gsub(",", "", d$RFU))
  
   # Process system date with custom date function
@@ -31,7 +29,7 @@ enzalyze_reform <- function(d, .labels = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr
  #   format not hms
   d$Rtime <- ymd_hm(paste(the.date, d$time))
   
-  # calculate elapsed time as a numeric vector and store it in a new column of d
+  # calculate elapsed time, for plotting purposes, as a numeric vector and store it in a new column of d
   d$elapsed <- as.numeric(d$Rtime - min(d$Rtime))
   
   # Attributes a unit to our numeric objects

@@ -14,7 +14,7 @@ lm_stats(d, xvar, yvar)
 \item{yvar}{Numeric column to be used as the dependant variable for the regression}
 }
 \value{
-Returns a one-row data frame containing (at present): slope, intercept, slope standard error, intercept standard error, p value, r-squared, and number of points.
+Returns a vector containing (at present): slope, intercept, slope standard error, intercept standard error, p value, r-squared, and number of points.
 }
 \description{
 Returns statistics for linear regressions (e.g. slope, intercept, error, etc)
