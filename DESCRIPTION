@@ -6,7 +6,7 @@ Date: 2015-06-08
 Author: Andrew D. Steen
 Maintainer: Andrew D. Steen <andrew.d.steen@gmail.com>
 Description: Contains tools to calculate rates of fluorescence/color change,
-  calibrate those rates, and plot data. So far I'm in ad-hoc development mode. 
+  calibrate those rates, and plot data. 
 License: MIT: Copyright (C) 2013 Andrew D. Steen. Permission is hereby granted, 
   free of charge, to any person obtaining a copy of this software and associated
   documentation files (the "Software"), to deal in the Software without restriction,

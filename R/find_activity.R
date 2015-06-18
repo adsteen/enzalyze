@@ -77,17 +77,17 @@ find_activity <- function(uncal, cal, site.code = NULL, substrates, .the.date = 
   lm_dframe$v0.se <- lm_dframe$slope.se / cal_slope
   
   # print plots for v0
-  p_calibrated <- ggplot(lm_dframe, aes_string(x = "substrate", y = "v0", colour = "rep",
+  p_activity <- ggplot(lm_dframe, aes_string(x = "substrate", y = "v0", colour = "rep",
                                         shape = "treatment")) +
     geom_pointrange(aes(ymin = v0 - v0.se, ymax = v0 + v0.se),
                     position = position_jitter(width=0.2)) +
     ylab(expression(paste(v[0], ", ", n, "M ", hr^{-1}))) + 
     ggtitle(paste0("Calibrated v0, site ", site.code))
   if(print.plot) {
-    print(p_calibrated)
+    print(p_activity)
   }
   if(save.plot) {
-    ggsave(paste0("calibrated_v0, site ", site.code), p_calibrated, height=4, width=6,
+    ggsave(paste0("site_", site.code, "_calibrated_v0.png"), p_activity, height=4, width=6,
            units="in", dpi=300)
   }
   

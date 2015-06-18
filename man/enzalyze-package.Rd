@@ -8,7 +8,7 @@ A package for quantifying enzyme activity using fluorogenic substrates
 }
 \description{
 
-~~ Within enzalyze are all the tools to calculate enzyme activities.  Beginning with melting data files, of various formats, into long form and reading them as a data frame.  Then by taking that data frame, extracting the statistics from a linear regression, and utilizing that data along with data from a calibration curve (also within the package) we can calculate true enzyme activity ~~
+~~ Within enzalyze are all the tools to calculate enzyme activity.  Various functions, in collaboration, read the raw data, calculate elapsed times, and create linear models based on the design variables.  Then the calibration curve is incorporated; read, modeled, and the slopes from both regressions are extracted to quantify enzymatic activity.  The entire regression analysis is returned.  If desired, plots of the raw data, calibration curve, and activity are also returned with the regression statistics.  ~~
 
 }
 \details{
@@ -60,5 +60,5 @@ Maintainer: Josh Gurka <jgurka@vols.utk.edu>
 \examples{
 ~~ find_activity("uncalib_curve.csv", "calib_curve.csv",
          substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC"), 
-         site.code = "testtest", print.plot = TRUE) ~~
+         site.code = "test", print.plot = TRUE) ~~
 }
