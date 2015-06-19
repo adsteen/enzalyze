@@ -76,22 +76,6 @@ if(save.plot) {
 
 So if you were to set `save.plot = TRUE`, `find_activity` would concatenate the proper description (i.e `"calibration_curve"` or `"calibrated_v0"`) with the `site.code` and save the plots under those labels.
 
-### Data Set
-
-| substrate | rep | treatment |  time  |      RFU     |
-|----------:|:----|:----------|:------:|-------------:|
-|1          |1    |live       |9:56    |137,813.04    |
-|1          |2    |live       |9:57    |135,673.5     |
-|1          |3    |live       |9:57    |138,597.51    |
-|1          |kill |killed     |9:57    |138,111.29    |
-|2          |1    |live       |9:58    |131,257.6     |
-|2          |2    |live       |9:58    |129,746.85    |
-|2          |3    |live       |9:58    |133,682.71    |
-|2          |kill |killed     |9:59    |125,420.78    |
-|...        |...  |...        |...     |...           |
-
-This version of `enzalyze` was built around data sets of this structure. Thus to reduce the chance of errors occurring, we recommend replicating this format.
-
 ## `read_long`
 
 Reading the imported datasets is the first step in `find_activity`
@@ -114,6 +98,8 @@ At the moment our example data frame looks like this:
 d_uncal <- read_long("../data/uncalib_curve.csv")
 head(d_uncal)
 ```
+
+This version of `enzalyze` was built around data sets of this structure. Thus to reduce the chance of errors occurring, we recommend replicating this format.
 
 ## `enzalyze_reform`
 
@@ -141,12 +127,7 @@ head(dr_uncal)
 ```
 
 ```{r print_data, echo = FALSE, fig.height= 5, fig.width=8}
-p_data <- ggplot(dr_uncal, aes_string(x = "elapsed", y = "RFU",
-                                shape = "treatment", colour = "rep", fill = "rep")) +
-    geom_point() +
-    geom_smooth(method="lm", se=FALSE) +
-    facet_wrap( ~ substrate) + 
-    ggtitle(paste("Raw Data site_", "vignette_example"))
+p_data <- enza_plotr(plot.data = TRUE, data = dr_uncal, time.variable = "elapsed", fluorescence.variable = "RFU", site.code = "vignette_example")
 print(p_data)
 ```
 
@@ -204,26 +185,21 @@ Within `find_activity`, the data for the calibration curve is fed through `read_
 
 Should your calibration curve cause you difficulty, here is how the example data set in this vignette is structured in case you want to replicate it 
 
-| volume.AMC | conc.AMC.nM |    RFU    |
-|-----------:|------------:|----------:|
-|0           |0            |923.76     |
-|5           |20           |32112.66   |
-|10          |40           |62830.94   |
-|20          |80           |131449.14  |
-|...         |...          |...        |
+```{r demo_data, echo=FALSE, warning=FALSE, message=FALSE}
+d_cal <- read_long(x = "../data/calib_curve.csv")
+head(d_cal)
+```
 
 `calib_slope` uses `lm_stats` to create a linear model of the `concentration.variable` and `fluorescence.variable` (default variables being `"conc.AMC.nM"` & `"RFU"`, respectively) and extracts the slope; returning it as a one-row vector. `lm_stats` trumps the base R function `lm` here because we can have the regression returned as a vector instead of a data frame.
 
 ```{r cal_curve}
-d_cal <- read_long(x = "../data/calib_curve.csv")
 d_cal[ , "RFU"] <- as.numeric(gsub(",", "", d_cal[ ,"RFU"]))
 ```
 ```{r print_curve, echo = FALSE, fig.height= 5, fig.width=8}
-p_calib <- ggplot(d_cal, aes_string(x = "conc.AMC.nM", y = "RFU")) +
-    geom_point() +
-    geom_smooth(method="lm", se=TRUE) +
-    ggtitle(paste0("Calibration Curve For AMC, site ", "vignette_example"))
-print(p_calib)
+p_curve <- enza_plotr(plot.curve = TRUE, curve = d_cal, 
+                      concentration.variable = "conc.AMC.nM",
+                      fluorescence.variable = "RFU", site.code = "vignette_example")
+print(p_curve)
 ```
 
 Along with a plot of the calibration curve, `calib_slope` uses `lm_stats` to create a linear model of the `concentration.variable` and `fluorescence.variable` (default variables being `"conc.AMC.nM"` & `"RFU"`, respectively). Then it extracts the slope and returns it as a one-row vector. `lm_stats` trumps the base R function `lm` here because we can have the regression returned as a vector instead of a data frame.
@@ -246,13 +222,8 @@ head(lm_dframe)
 The last of three plots the various substrates versus their activity.
 
 ```{r v0_plot, echo=FALSE, fig.height= 5, fig.width=8}
-p_calibrated <- ggplot(lm_dframe, aes_string(x = "substrate", y = "v0", colour = "rep",
-                                        shape = "treatment")) +
-    geom_pointrange(aes(ymin = v0 - v0.se, ymax = v0 + v0.se),
-                    position = position_jitter(width=0.2)) +
-    ylab(expression(paste(v[0], ", ", n, "M ", hr^{-1}))) + 
-    ggtitle(paste0("Calibrated v0, site ", "vignette_example"))
-print(p_calibrated)
+p_activity <- enza_plotr(plot.v0 = TRUE, activity = lm_dframe, site.code = "vignette_example")
+print(p_activity)
 ```
 
 > "He who gives up [code] safety for [code] speed deserves neither."

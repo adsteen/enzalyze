@@ -30,15 +30,14 @@ find_activity <- function(uncal, cal, site.code = NULL, substrates, .the.date = 
   dr_uncal <- enzalyze_reform(d = d_uncal, .labels = substrates, the.date = .the.date)
   
   # Plot the raw data
-  p_data <- ggplot(dr_uncal, aes_string(x = time.variable, y = fluorescence.variable,
-                                shape = "treatment", colour = "rep", fill = "rep")) +
-    geom_point() +
-    geom_smooth(method="lm", se=FALSE) +
-    facet_wrap( ~ substrate) + 
-    ggtitle(paste("Raw Data site_", site.code))
+  
+  p_data <- enza_plotr(plot.data = TRUE, data = dr_uncal, time.variable = time.variable,
+                       fluorescence.variable = fluorescence.variable, site.code = site.code)
+  
   if(print.plot) {
     print(p_data)
   }
+
   if(save.plot) {
     ggsave(paste0("site_", site.code, "_raw_data.png"), p_data, height=4, width=6,
            units="in", dpi=300)
@@ -56,15 +55,16 @@ find_activity <- function(uncal, cal, site.code = NULL, substrates, .the.date = 
   d_cal[ , "RFU"] <- as.numeric(gsub(",", "", d_cal[ ,"RFU"]))
   
   # Create the option to print calibration curve so we can see if it looks good
-  p_calib <- ggplot(d_cal, aes_string(x = concentration.variable, y = fluorescence.variable)) +
-    geom_point() +
-    geom_smooth(method="lm", se=TRUE) +
-    ggtitle(paste0("Calibration Curve For AMC, site ", site.code))
-  if(print.plot) {
-    print(p_calib)
+  p_curve <- enza_plotr(plot.curve = TRUE, curve = d_cal, 
+                        concentration.variable = concentration.variable,
+                        fluorescence.variable = fluorescence.variable, site.code = site.code)
+ 
+   if(print.plot) {
+    print(p_curve)
   }
-  if(save.plot) {
-    ggsave(paste0("site_", site.code, "_calibration_curve.png"), p_calib, height=5,
+ 
+   if(save.plot) {
+    ggsave(paste0("site_", site.code, "_calibration_curve.png"), p_curve, height=5,
            width=6, units="in", dpi=300)
   }
   
@@ -76,13 +76,10 @@ find_activity <- function(uncal, cal, site.code = NULL, substrates, .the.date = 
   lm_dframe$v0 <- lm_dframe$slope / cal_slope
   lm_dframe$v0.se <- lm_dframe$slope.se / cal_slope
   
-  # print plots for v0
-  p_activity <- ggplot(lm_dframe, aes_string(x = "substrate", y = "v0", colour = "rep",
-                                        shape = "treatment")) +
-    geom_pointrange(aes(ymin = v0 - v0.se, ymax = v0 + v0.se),
-                    position = position_jitter(width=0.2)) +
-    ylab(expression(paste(v[0], ", ", n, "M ", hr^{-1}))) + 
-    ggtitle(paste0("Calibrated v0, site ", site.code))
+  # Create a plots for v0
+  p_activity <- enza_plotr(plot.v0 = TRUE, activity = lm_dframe, site.code = site.code)
+  
+  # If required, print and save them
   if(print.plot) {
     print(p_activity)
   }
