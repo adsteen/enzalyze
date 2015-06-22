@@ -54,5 +54,5 @@ enza_plotr <- function(plot.data = FALSE, plot.curve = FALSE, plot.v0 = FALSE,
     
     print(p_activity)
   }
-  
+  p_activity
 }
