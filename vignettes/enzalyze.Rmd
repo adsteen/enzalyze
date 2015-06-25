@@ -127,7 +127,10 @@ head(dr_uncal)
 ```
 
 ```{r print_data, echo = FALSE, fig.height= 5, fig.width=8}
-p_data <- enza_plotr(plot.data = TRUE, data = dr_uncal, time.variable = "elapsed", fluorescence.variable = "RFU", site.code = "vignette_example")
+p_data <- data_plotr(dr_uncal, datalabel = "Raw Data site ", site.code = "test_vignette",
+                     time.variable = "elapsed", 
+                     fluorescence.variable = "RFU", shape = "treatment", 
+                     colour = "rep", fill = "rep")
 print(p_data)
 ```
 
@@ -196,9 +199,9 @@ head(d_cal)
 d_cal[ , "RFU"] <- as.numeric(gsub(",", "", d_cal[ ,"RFU"]))
 ```
 ```{r print_curve, echo = FALSE, fig.height= 5, fig.width=8}
-p_curve <- enza_plotr(plot.curve = TRUE, curve = d_cal, 
-                      concentration.variable = "conc.AMC.nM",
-                      fluorescence.variable = "RFU", site.code = "vignette_example")
+p_curve <- curve_plotr(data = d_cal, concentration.variable = "conc.AMC.nM", 
+                       fluorescence.variable = "RFU", 
+                       curvelabel = "Calibration Curve site ", site.code = "test_vignette")
 print(p_curve)
 ```
 
@@ -222,7 +225,8 @@ head(lm_dframe)
 The last of three plots the various substrates versus their activity.
 
 ```{r v0_plot, echo=FALSE, fig.height= 5, fig.width=8}
-p_activity <- enza_plotr(plot.v0 = TRUE, activity = lm_dframe, site.code = "vignette_example")
+p_activity <- v0_plotr(data = lm_dframe, v0label = "Calibrated v0 site ", 
+                       site.code = "test_vignette")
 print(p_activity)
 ```
 
