@@ -31,8 +31,10 @@ find_activity <- function(uncal, cal, site.code = NULL, substrates, .the.date = 
   
   # Plot the raw data
   
-  p_data <- enza_plotr(plot.data = TRUE, data = dr_uncal, time.variable = time.variable,
-                       fluorescence.variable = fluorescence.variable, site.code = site.code)
+  p_data <- data_plotr(dr_uncal, datalabel = "Raw Data site ", site.code = site.code, 
+                       time.variable = time.variable, fluorescence.variable = fluorescence.variable,
+                       shape = "treatment",
+                       colour = "rep", fill = "rep")
   
   if(print.plot) {
     print(p_data)
@@ -55,9 +57,9 @@ find_activity <- function(uncal, cal, site.code = NULL, substrates, .the.date = 
   d_cal[ , "RFU"] <- as.numeric(gsub(",", "", d_cal[ ,"RFU"]))
   
   # Create the option to print calibration curve so we can see if it looks good
-  p_curve <- enza_plotr(plot.curve = TRUE, curve = d_cal, 
-                        concentration.variable = concentration.variable,
-                        fluorescence.variable = fluorescence.variable, site.code = site.code)
+  p_curve <- curve_plotr(data = d_cal, concentration.variable = concentration.variable, 
+                         fluorescence.variable = fluorescence.variable, 
+                         curvelabel = "Calibration Curve site ", site.code = site.code)
  
    if(print.plot) {
     print(p_curve)
@@ -77,7 +79,8 @@ find_activity <- function(uncal, cal, site.code = NULL, substrates, .the.date = 
   lm_dframe$v0.se <- lm_dframe$slope.se / cal_slope
   
   # Create a plots for v0
-  p_activity <- enza_plotr(plot.v0 = TRUE, activity = lm_dframe, site.code = site.code)
+  p_activity <- v0_plotr(data = lm_dframe, v0label = "Calibrated v0 site ",
+                         site.code = site.code)
   
   # If required, print and save them
   if(print.plot) {
