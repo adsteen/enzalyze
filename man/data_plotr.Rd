@@ -8,7 +8,27 @@ data_plotr(data, datalabel = "Raw Data site", site.code, time.variable,
   fluorescence.variable, shape = "treatment", colour = "rep",
   fill = "rep")
 }
+\arguments{
+\item{data}{the data frame used to create the plot}
+
+\item{datalabel}{a character string title for the plot}
+
+\item{site.code}{a character string label specific to the sample or run, to be joined with the plot title}
+
+\item{time.variable}{the independent variable in creating the plot}
+
+\item{fluorescence.variable}{the dependent variable in the plots}
+
+\item{shape}{ggplot parameter}
+
+\item{colour}{ggplot parameter}
+
+\item{fill}{ggplot parameter}
+}
+\value{
+a faceted plot of the time variable vs the fluorescence variable, for each substrate
+}
 \description{
-Create faceted plot of data
+A tool for plotting raw fluorescence readings vs elapsed time for each substrate tested
 }
 

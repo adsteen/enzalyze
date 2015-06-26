@@ -7,6 +7,20 @@
 curve_plotr(data, concentration.variable, fluorescence.variable, curvelabel,
   site.code)
 }
+\arguments{
+\item{data}{the data frame containing the calibration curve data}
+
+\item{concentration.variable}{independent variable for the plot of the calibration curve}
+
+\item{curvelabel}{character string label for the plot title}
+
+\item{site.code}{character string label specific to the sample or run, to be concatenated with the `curvelabel`}
+
+\item{fluorescence}{variable dependent variable for the plot}
+}
+\value{
+A plot of the calibration curve
+}
 \description{
 Create plot of the Calibration Curve
 }

@@ -1,5 +1,8 @@
 ##' Create Plot of v0 for various substrates
 ##' 
+##' @param data data frame containing the linear regression statistics; including v0 and v0.se
+##' @param v0label character string label for the v0 plot
+##' @param site.code character string label specific to the sample or run, to be concatenated with `v0label` in the title
 ##' @export
 
 v0_plotr <- function(data, v0label, site.code){

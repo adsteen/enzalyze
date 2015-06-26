@@ -6,6 +6,13 @@
 \usage{
 v0_plotr(data, v0label, site.code)
 }
+\arguments{
+\item{data}{data frame containing the linear regression statistics; including v0 and v0.se}
+
+\item{v0label}{character string label for the v0 plot}
+
+\item{site.code}{character string label specific to the sample or run, to be concatenated with `v0label` in the title}
+}
 \description{
 Create Plot of v0 for various substrates
 }
