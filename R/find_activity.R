@@ -20,7 +20,7 @@ find_activity <- function(uncal, cal, site.code = NULL, substrates, .the.date = 
                      save.plot = FALSE, plot.filename = NULL, save.datafile = FALSE,
                      datafile.filename = NULL){
   
-  
+  #browser()
   # We want to read the data
   d_uncal <- read_long(x = uncal)
   
@@ -54,6 +54,8 @@ find_activity <- function(uncal, cal, site.code = NULL, substrates, .the.date = 
   ####
   d_cal <- read_long(x = cal)
   
+  
+  # Turn this into an if function with a default of TRUE
   d_cal[ , "RFU"] <- as.numeric(gsub(",", "", d_cal[ ,"RFU"]))
   
   # Create the option to print calibration curve so we can see if it looks good
