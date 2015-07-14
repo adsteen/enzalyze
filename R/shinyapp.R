@@ -153,9 +153,13 @@ server <- function(input, output){
   ### possible error: the format that input$date sends the date into `enzalyze_reform`
   df_uncal <- reactive({
     dat <- input$data
-    if(is.null(dat)){return()} 
+    if(is.null(dat))
+      return() 
+    else
     data_read <- read.csv(file = dat$datapath, sep = input$sep, header = input$header,
                    stringsAsFactors = input$stringAsFactors)
+    
+    ## I think this might be throwing an error
     dr_uncal <- enzalyze_reform(d = data_read, .labels = input$substrate, the.date = input$date)
   })
   
@@ -163,17 +167,24 @@ server <- function(input, output){
   # Create the data frame for the calibration curve
   d_cal <- reactive({
     file2 <- input$curve
-    if(is.null(file2)){return()} 
+    if(is.null(file2))
+      return()
+    else
     d2 <- read.csv(file = file2$datapath, sep = input$sep2, header = input$header2,
                    stringsAsFactors = input$stringAsFactors2)
+    
+    ## I think this might be throwing an error
     d2[ , "RFU"] <- as.numeric(gsub(",", "", d2[ ,"RFU"]))
     })
   
   
   # Create the data frame for v0 plot (full linear regression summary w/calibrated v0 and v0.se)
-  # Potential error: how does shiny carry df_uncal() and d_cal()...how does it replicate code within
+  # Potential error: how does shiny parse design variables; `find_activity` parameter 
+  #   requires a vector of character string labels
+  # Potential error: how does shiny carry df_uncal() and d_cal()...how does it replicate
+  #   code within
   lm_dframe <- reactive({
-    lm_df <- uncalib_slope(d = df_uncal(), id.var = input$design.variables, 
+    lm_df <- uncalib_slope(d = df_uncal(), id.var = c(input$design.variables), 
                            time.var = input$time.variable,
                            fluorescence = input$fluorescence.variable)
     
