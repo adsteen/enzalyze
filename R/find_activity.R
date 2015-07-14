@@ -6,7 +6,7 @@
 ##' @param site.code desired label/destinction for data set
 ##' @param substrates Character string label to replace numeric label of substrates in data
 ##' @param .the.date The date the data was gathered (default will print the current date)
-##' @param design.variables Test-specific design variables. Also serves as a vector of variables by which to split input data frame by, before applying lm_stats to calculate slope values
+##' @param design.variables Test-specific design variables (entered as a vector of character string labels). Also serves as a vector of variables by which to split input data frame by, before applying lm_stats to calculate slope values
 ##' @param time.variable Independent variable for the uncalibrated linear model
 ##' @param fluorescence.variable Dependent variable for the linear model (same for uncalibrated & calibrated models)
 ##' @param concentration.variable Independent variable for the calibration curve linear model to represent the concentration
@@ -20,7 +20,7 @@ find_activity <- function(uncal, cal, site.code = NULL, substrates, .the.date = 
                      save.plot = FALSE, plot.filename = NULL, save.datafile = FALSE,
                      datafile.filename = NULL){
   
-  #browser()
+
   # We want to read the data
   d_uncal <- read_long(x = uncal)
   
