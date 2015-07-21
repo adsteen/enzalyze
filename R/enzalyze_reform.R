@@ -14,7 +14,7 @@ enzalyze_reform <- function(d, .labels = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr
   # Convert the subtrate numbers into names of substrate
   # This needs to not be hardcoded as the "substrate" column. potential for easy error such as 
   #   titling column as "Substrate"
-  d$substrate <- factor(as.character(d$substrate), labels = .labels)
+  # d$substrate <- factor(as.character(d$substrate), labels = .labels)
   
   # Convert fluorescence units to a numeric value so we can use them with the binary operations later
   d[ , "RFU"] <- as.numeric(gsub(",", "", d$RFU))
