@@ -8,7 +8,8 @@
 #' @export
 
 # this is a rough draft of the default variables, check with typical raw data structures
-enzalyze_reform <- function(d, .labels = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC"),
+enzalyze_reform <- function(d,
+                            # .labels = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC"),
                             the.date = NULL){
 
   # Convert the subtrate numbers into names of substrate

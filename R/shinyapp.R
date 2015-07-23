@@ -42,7 +42,7 @@ ui <- fluidPage(
     mainPanel(
       uiOutput("df2")
     )
-    ),
+    )
   
   ## Create the space for plots; three tabs for the three plots
 #   titlePanel("Plots"),
@@ -52,32 +52,32 @@ ui <- fluidPage(
 #     tabPanel("Calibrated Activty", plotOutput("v0"))
 #   ),
   
-  mainPanel(
-    uiOutput("plots")
-  ),
-  
-  ## Space below plots, for parameter selection
-  fluidRow(
-    column(3,
-           textInput("site.code", "Site Code"),
-           dateInput("date", "Date"),
-           textInput("substrate", "Substrates")), 
-    column(4, offset = 1,
-           selectInput("time.variable", "Time Variable", c("Elapsed" = "elapsed")),
-           selectInput("fluorescence.variable", "Fluorescence Variable",
-                       c("RFU" = "RFU", "FSU" = "FSU")),
-           selectInput("concentration.variable", "Concentration Variable",
-                       c("AMC.nM" = "AMC.nM",
-                         "MUB.nM" = "MUB.nM"))),
-    column(4, 
-           checkboxGroupInput("design.variables", "Design Variables",
-                                     c("Replicate" = "rep",
-                                       "Treatment" = "treatment",
-                                       "Substrate" = "substrate")),
-           actionButton("plot", "Plot")
-    )
-  ),
-  uiOutput("lm_dframe")
+#   mainPanel(
+#     uiOutput("plots")
+#   ),
+#   
+#   ## Space below plots, for parameter selection
+#   fluidRow(
+#     column(3,
+#            textInput("site.code", "Site Code"),
+#            dateInput("date", "Date"),
+#            textInput("substrate", "Substrates")), 
+#     column(4, offset = 1,
+#            selectInput("time.variable", "Time Variable", c("Elapsed" = "elapsed")),
+#            selectInput("fluorescence.variable", "Fluorescence Variable",
+#                        c("RFU" = "RFU", "FSU" = "FSU")),
+#            selectInput("concentration.variable", "Concentration Variable",
+#                        c("AMC.nM" = "AMC.nM",
+#                          "MUB.nM" = "MUB.nM"))),
+#     column(4, 
+#            checkboxGroupInput("design.variables", "Design Variables",
+#                                      c("Replicate" = "rep",
+#                                        "Treatment" = "treatment",
+#                                        "Substrate" = "substrate")),
+#            actionButton("plot", "Plot")
+#     )
+#   ),
+#   uiOutput("lm_dframe")
 )
 
 
@@ -149,107 +149,107 @@ server <- function(input, output){
   
           ####################### Create Data Frames #########################
   
-    # Create the data frame for the p_data plot
-  ### possible error: the format that input$date sends the date into `enzalyze_reform`
-  df_uncal <- reactive({
-    dat <- input$data
-    if(is.null(dat))
-      return() 
-    else
-    data_read <- read.csv(file = dat$datapath, sep = input$sep, header = input$header,
-                   stringsAsFactors = input$stringAsFactors)
-    
-    ## I think this might be throwing an error
-    dr_uncal <- enzalyze_reform(d = data_read, .labels = input$substrate, the.date = input$date)
-  })
-  
-  
-  # Create the data frame for the calibration curve
-  d_cal <- reactive({
-    file2 <- input$curve
-    if(is.null(file2))
-      return()
-    else
-    d2 <- read.csv(file = file2$datapath, sep = input$sep2, header = input$header2,
-                   stringsAsFactors = input$stringAsFactors2)
-    
-    ## I think this might be throwing an error
-    d2[ , "RFU"] <- as.numeric(gsub(",", "", d2[ ,"RFU"]))
-    })
-  
-  
-  # Create the data frame for v0 plot (full linear regression summary w/calibrated v0 and v0.se)
-  # Potential error: how does shiny parse design variables; `find_activity` parameter 
-  #   requires a vector of character string labels
-  # Potential error: how does shiny carry df_uncal() and d_cal()...how does it replicate
-  #   code within
-  lm_dframe <- reactive({
-    lm_df <- uncalib_slope(d = df_uncal(), id.var = c(input$design.variables), 
-                           time.var = input$time.variable,
-                           fluorescence = input$fluorescence.variable)
-    
-    cal_slope <- calib_slope(d = d_cal(), xvar = input$concentration.variable, 
-                             yvar = input$fluorescence.variable)
-    
-    lm_df$v0 <- lm_df$slope / cal_slope
-    lm_df$v0.se <- lm_df$slope.se / cal_slope
-    
-  })
-
-              ##################### Create Plots ########################
-      
-  # Create data plot, faceted by substrate
-  ### possible error: df_uncal() is a function. Current thought is that it represnts all within
-  ###                 the function, including the resulting data-frame.  NEED for the
-  ###                 data frame to be inserted here for function to work...
-  output$p_data <- renderPlot({
-    input$plot
-    if(input$plot == 0)
-      return()
-    else
-    isolate(data_plotr(data = df_uncal(), datalabel = "Raw Data site ", 
-                     site.code = input$site.code, time.variable = "elapsed", 
-                     fluorescence.variable = "RFU",
-                     shape = "treatment", colour = "rep", fill = "rep"))
-  })
-  
-  # Create the plot for the calibration curve
-  output$p_curve <- renderPlot({
-    input$plot
-    if(input$plot == 0)
-      return()
-    else
-    isolate(curve_plotr(data = d_cal(), concentration.variable = input$concentration.variable, 
-                      fluorescence.variable = input$fluorescence.variable, 
-                      curvelabel = "Calibration Curve site ", site.code = input$site.code))
-  })
-  
-  # Create the plot for calibrated v0
-  output$p_activity <- renderPlot({
-    input$plot
-    if(input$plot == 0)
-      return()
-    else
-    isolate(v0plotr(data = lm_dframe(), v0label = "Calibrated v0 site ", 
-                  site.code = input$site.code))
-  })
-            ############### Render Plots and Final Data Frame ################### 
-  
-  # idea here is to dynamically render plots when parameters are entered
-  output$plots <- renderUI({
-    input$plot
-    if(input$plot == 0)
-      return()
-    else
-    isolate(tabsetPanel(tabPanel("Data", plotOutput("p_data")),
-                tabPanel("Calibration Curve", plotOutput("p_curve")),
-                tabPanel("Calibrated Activity", plotOutput("p_activity"))))
-    
-  })
-  
-  output$lm_dframe <- renderDataTable(
-    lm_dframe()
-    )
+#     # Create the data frame for the p_data plot
+#   ### possible error: the format that input$date sends the date into `enzalyze_reform`
+#   df_uncal <- reactive({
+#     dat <- input$data
+#     if(is.null(dat))
+#       return() 
+#     else
+#     data_read <- read.csv(file = dat$datapath, sep = input$sep, header = input$header,
+#                    stringsAsFactors = input$stringAsFactors)
+#     
+#     ## I think this might be throwing an error
+#     dr_uncal <- enzalyze_reform(d = data_read, .labels = input$substrate, the.date = input$date)
+#   })
+#   
+#   
+#   # Create the data frame for the calibration curve
+#   d_cal <- reactive({
+#     file2 <- input$curve
+#     if(is.null(file2))
+#       return()
+#     else
+#     d2 <- read.csv(file = file2$datapath, sep = input$sep2, header = input$header2,
+#                    stringsAsFactors = input$stringAsFactors2)
+#     
+#     ## I think this might be throwing an error
+#     d2[ , "RFU"] <- as.numeric(gsub(",", "", d2[ ,"RFU"]))
+#     })
+#   
+#   
+#   # Create the data frame for v0 plot (full linear regression summary w/calibrated v0 and v0.se)
+#   # Potential error: how does shiny parse design variables; `find_activity` parameter 
+#   #   requires a vector of character string labels
+#   # Potential error: how does shiny carry df_uncal() and d_cal()...how does it replicate
+#   #   code within
+#   lm_dframe <- reactive({
+#     lm_df <- uncalib_slope(d = df_uncal(), id.var = c(input$design.variables), 
+#                            time.var = input$time.variable,
+#                            fluorescence = input$fluorescence.variable)
+#     
+#     cal_slope <- calib_slope(d = d_cal(), xvar = input$concentration.variable, 
+#                              yvar = input$fluorescence.variable)
+#     
+#     lm_df$v0 <- lm_df$slope / cal_slope
+#     lm_df$v0.se <- lm_df$slope.se / cal_slope
+#     
+#   })
+# 
+#               ##################### Create Plots ########################
+#       
+#   # Create data plot, faceted by substrate
+#   ### possible error: df_uncal() is a function. Current thought is that it represnts all within
+#   ###                 the function, including the resulting data-frame.  NEED for the
+#   ###                 data frame to be inserted here for function to work...
+#   output$p_data <- renderPlot({
+#     input$plot
+#     if(input$plot == 0)
+#       return()
+#     else
+#     isolate(data_plotr(data = df_uncal(), datalabel = "Raw Data site ", 
+#                      site.code = input$site.code, time.variable = "elapsed", 
+#                      fluorescence.variable = "RFU",
+#                      shape = "treatment", colour = "rep", fill = "rep"))
+#   })
+#   
+#   # Create the plot for the calibration curve
+#   output$p_curve <- renderPlot({
+#     input$plot
+#     if(input$plot == 0)
+#       return()
+#     else
+#     isolate(curve_plotr(data = d_cal(), concentration.variable = input$concentration.variable, 
+#                       fluorescence.variable = input$fluorescence.variable, 
+#                       curvelabel = "Calibration Curve site ", site.code = input$site.code))
+#   })
+#   
+#   # Create the plot for calibrated v0
+#   output$p_activity <- renderPlot({
+#     input$plot
+#     if(input$plot == 0)
+#       return()
+#     else
+#     isolate(v0plotr(data = lm_dframe(), v0label = "Calibrated v0 site ", 
+#                   site.code = input$site.code))
+#   })
+#             ############### Render Plots and Final Data Frame ################### 
+#   
+#   # idea here is to dynamically render plots when parameters are entered
+#   output$plots <- renderUI({
+#     input$plot
+#     if(input$plot == 0)
+#       return()
+#     else
+#     isolate(tabsetPanel(tabPanel("Data", plotOutput("p_data")),
+#                 tabPanel("Calibration Curve", plotOutput("p_curve")),
+#                 tabPanel("Calibrated Activity", plotOutput("p_activity"))))
+#     
+#   })
+#   
+#   output$lm_dframe <- renderDataTable(
+#     lm_dframe()
+#     )
 }
 
 shinyApp(ui = ui, server = server)
