@@ -22,12 +22,13 @@ calib_slope <- function(d, xvar="conc.AMC.nM", yvar="RFU"){
  
  
   # Using `lm_stats` for consistency and reliability, very easy to extract slope from regression stats
-  model <- lm_stats(d = d, xvar = xvar, yvar = yvar)
+  cal <- lm_stats(d = d, xvar = xvar, yvar = yvar)
   
   # Extract the slope of the model
-  cal_slopes <- model["slope"]
+  cal_slopes <- cal["slope"]
+  
+  cal_slopes <- as.data.frame(cal_slopes)
   
   cal_slopes
  
-
 }

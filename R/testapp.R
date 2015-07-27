@@ -85,13 +85,14 @@ server <- function(input, output){
     head(d_uncal)
   })
   
-  ########ERROR: throwing an error when trying to get slope; dividing by a concentration of 0 
+  ########ERROR: throwing an error when trying to get calibration curve slope 
   slopecal <- reactive({
     file1 <- input$curve
     if(is.null(file1)){return()} 
     d_uncal <- read.csv(file = file1$datapath,
                         header = input$header2, 
                         stringsAsFactors = FALSE)
+    d_uncal[ , input$fluorescence.curve] <- as.numeric(gsub(",", "", d_uncal[ ,input$fluorescence.curve]))
     cal_slope <- calib_slope(d = d_uncal, xvar = input$concentration.variable, 
                              yvar = input$fluorescence.curve)
     
@@ -161,7 +162,8 @@ server <- function(input, output){
     else
       radioButtons("fluorescence.variable", "Select Fluorescence Variable", nms())
   })
-   
+  
+  # When simplifying, this should be used to recycle same code throughout GUI w/ data() 
   # First step of find_activity; read .csv file
   # Returns head of data frame as checkpoint for this step
   data <- reactive({
@@ -197,6 +199,25 @@ server <- function(input, output){
     head(d_uncal)
   })
   
+  data_plot <- reactive({
+    file1 <- input$data
+    if(is.null(file1)){return()}
+    d_uncal <- read.csv(file = file1$datapath,
+                        header = input$header,
+                        stringsAsFactors = FALSE)
+    d_uncal[ , input$fluorescence.variable] <- as.numeric(gsub(",", "", d_uncal[ ,input$fluorescence.variable]))
+    the.date <- the_date(the.date = NULL)
+    Rtime <- ymd_hm(paste(the.date, d_uncal[ , input$time.variable]))
+    d_uncal$elapsed <- as.numeric(Rtime - min(Rtime))
+    attr(d_uncal$elapsed, "units") <- "seconds"
+    
+    p_data <- data_plotr(d_uncal, datalabel = "Raw Data site ", site.code = site.code, 
+                         time.variable = time.variable, 
+                         fluorescence.variable = input$fluorescence.variable,
+                         shape = "treatment",
+                         colour = "rep", fill = "rep")
+  })
+  
   lm_data <- reactive({
     file1 <- input$data
     if(is.null(file1)){return()} 
@@ -217,7 +238,7 @@ server <- function(input, output){
                                time.var = "elapsed",
                                fluorescence = input$fluorescence.variable)
     
-#     ###  Getting an error from Calib_Slope; first concentration is 0 and its trying to divide by zero
+#     ###  Getting an error from Calib_Slope 
 #     file2 <- input$curve
 #     if(is.null(file2)){return()} 
 #     d_cal <- read.csv(file = file2$datapath,
@@ -228,7 +249,12 @@ server <- function(input, output){
 #     lm_dframe$v0 <- lm_dframe$slope / cal_slope
 #     lm_dframe$v0.se <- lm_dframe$slope.se / cal_slope
 #     ###
-#     
+    
+    if(is.null(slopecal())){return()}
+    else
+      {cal_slope <- slopecal()
+      lm_dframe$v0 <- lm_dframe$slope / cal_slope
+      lm_dframe$v0.se <- lm_dframe$slope.se / cal_slope}
     
     head(lm_dframe)
   })
