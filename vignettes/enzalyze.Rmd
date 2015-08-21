@@ -1,0 +1,234 @@
+---
+title: "enzalyze"
+author: "Josh Gurka"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{enzalyze}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r load_packages,echo=FALSE, message=FALSE}
+library(devtools)
+library(enzalyze)
+library(plyr)
+library(ggplot2)
+library(reshape2)
+library(lubridate)
+```
+
+`enzalye` is a package for measuring enzyme activities using fluorogenic/chromogenic substrates.  It's primary function; `find_activity` takes a raw, uncalibrated data set, along with it's calibration curve, and returns a summary of the linear regression.  This summary includes the slope of the data, slope standard-error, activity (v0), standard-error activty (v0.se), as well as other typical components of a regression analysis.  
+
+Critical functions within the package include; 
+
+1. `find_activity` - Calculates the activity of enzymes from raw datasets.
+2. `read_long` - Omits NA values from a data set, then reads it as a data frame.
+3. `enzalyze_reform` - Replaces numerical substrate labels with character string names.  Then calculates, and inserts elapsed time values into a new column of the data frame.
+4. `uncalib_slope` - Calculates the uncalibrated slope of every unique combination of the id-variables.
+5. `lm_stats` - Returns statistics for linear regressions (e.g. slope, intercept, error, etc).
+6. `calib_slope` - Calculates the slope of a calibration curve.
+
+# `find_activity`
+
+`find_activity` is the primary function of `enzalyze`.  The intention is for `find_activity` to be relatively streamlined and easy to use.  The user can input a raw data set along with a calibration curve and be returned a regressional analysis of each unique combination of the design variables. The statistics returned include; slope, intercept, r-squared, activity, etc. 
+
+### Installation
+
+Be sure that `devtools` (and all other packages from the _Imports_ list downloaded successfully; see _DESCRIPTION_) and then to install enzalyze, run
+
+```{r install_enzalyze, eval=FALSE}
+install_github("joshgurka/enzalyze")
+```
+
+### Parameters
+
+```{r activity_params, eval=FALSE, warning=FALSE, message=FALSE}
+find_activity <- function(uncal, cal, site.code = NULL, substrates, .the.date = NULL,
+                     design.variables = c("rep", "treatment", "substrate"),
+                     time.variable = "elapsed", fluorescence.variable = "RFU",
+                     concentration.variable = "conc.AMC.nM", print.plot = FALSE,
+                     save.plot = FALSE, plot.filename = NULL, save.datafile = FALSE,
+                     datafile.filename = NULL)
+```
+
+The first two parameters come into play with the function `read_long`.  `uncal` & `cal` represent your uncalibrated and calibrated data sets respectively, formatted as a .csv file. For this vignette I will use data and a calibration curve from Prof. Drew Steen's lab.
+
+`site.code` is a parameter to designate the site from which the sample was extracted.  If plotted or saved, this site-code is pasted together with a character string label for the specific graph.  This is most useful for organization while comparing the plots of multiple samples.
+
+`substrates` should be a vector containing character string names of the substrates used in the experiment.  This vector will replace any numbers or factors currently labeling the substrates from the data import process.
+
+`the.date` is a parameter with a default of `NULL`.  If left as `NULL`, `find_activity` will call to a function that will return the current system date.  
+
+`design.variables` are the variables that the experiment is built around.  The default design variables are "rep", "treatment", and "substrate".  It is important to know that these are not measured variables.  `find_activity` will split the data by these variables and apply a linear regression analysis to all unique combinations of the design variables.
+
+`time.variable` serves as the independent variable for the linear models created with the data.  In the example I will work through in this vignette "elapsed" time, in seconds, is used. Then `concentration.variable` is the independent variable for the calibration curve and `fluorescence.variable` serves as the dependent variable for both. "conc.AMC.nM" and "RFU" are used in this example, respectively.
+
+`find_activity` has some parameters such as; `save.plot`, `print.plot`, etc, with a default set to `FALSE` to save the user from being bombarded with plots and files they may not want saved on their computer.  These are an easy switch by simply entering `print.plot = TRUE` if the you want to see the data, calibration curve, and activity plots.  Or `save.plot = TRUE` if you wish to save the plots with the previously designated `site.code`.
+
+For example, this is the code I used
+
+```{r save_example, eval = FALSE}
+if(save.plot) {
+    ggsave(paste0("site_", site.code, "_calibration_curve.png"), p_calib, height=5,
+           width=6, units="in", dpi=300)
+}
+```
+
+So if you were to set `save.plot = TRUE`, `find_activity` would concatenate the proper description (i.e `"calibration_curve"` or `"calibrated_v0"`) with the `site.code` and save the plots under those labels.
+
+## `read_long`
+
+Reading the imported datasets is the first step in `find_activity`
+
+```{r fa_read, eval=FALSE}
+find_activity(uncal = "uncalib_curve.csv", ...)
+```
+
+Calls to `read_long` as
+
+```{r read_long, eval=FALSE}
+read_long(x = uncal)
+```
+
+`read_long` takes in a .csv-formatted data set, creates a filename with a path from the original filename "x", omits any NA values, then it reads the file as a data frame.
+
+At the moment our example data frame looks like this:
+
+```{r head_dUNCAL, echo=FALSE}
+d_uncal <- read_long("../data/uncalib_curve.csv")
+head(d_uncal)
+```
+
+This version of `enzalyze` was built around data sets of this structure. Thus to reduce the chance of errors occurring, we recommend replicating this format.
+
+## `enzalyze_reform`
+
+```{r fa_reform, eval=FALSE}
+find_activity(..., site.code = "vignette_example", substrates = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC"), .the.date = NULL, print.plot = TRUE, ...)
+```
+
+Calls to `enzalyze_reform` function in this manner;
+
+```{r fa_REFORM, eval=FALSE}
+enzalyze_reform(d = d_uncal, .labels = substrates, the.date = .the.date)
+```
+
+This function takes the data frame from the `read_long` step and preps it to be manipulated in later steps.  For example, it will convert the numeric labels of the substrates used into character string names (i.e (1, 2, 3, 4, 5) -> ("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC")), solely for organization purposes.
+
+If the measured fluorescence values contain a letter or symbol as a separator, the value will be interpreted as a factor by `read_long`. So to ammend this, `enzalyze_reform` will remove these characters (but not periods). This step is important because in the final step of `find_activity` binary operations are used to calculate __v0__, thus we need numerical values, not factors. 
+
+It will also calculate and insert elapsed times into a new column of the data frame to serve as the independent variable for the linear models of the data.
+
+After all that, our data looks like this;
+
+```{r reform_df, echo=FALSE}
+dr_uncal <- enzalyze_reform(d = d_uncal, .labels = c("Arg-AMC", "Gly-AMC", "Leu-AMC", "Pyr-AMC", "GlyGlyArg-AMC"), the.date = NULL)
+head(dr_uncal)
+```
+
+```{r print_data, echo = FALSE, fig.height= 5, fig.width=8}
+p_data <- data_plotr(dr_uncal, datalabel = "Raw Data site ", site.code = "test_vignette",
+                     time.variable = "elapsed", 
+                     fluorescence.variable = "RFU", shape = "treatment", 
+                     colour = "rep", fill = "rep")
+print(p_data)
+```
+
+## `uncalib_slope`
+
+This function calculates the linear regression statistics of the uncalibrated data, for all unique combinations of design variables (the default id-variables are _rep_, _treatment_, and _substrate_). The analysis includes the uncalibrated slopes (in units of RFU/hr), intercept, r-squared value, etc.  
+
+Running;
+
+```{r fa_uncal, eval=FALSE}
+find_activity(..., design.variables = c("rep", "treatment", "substrate"), 
+              time.variable = "elapsed", fluorescence.variable = "RFU", 
+              print.plot = TRUE, ...)
+```
+
+Will match to `uncalib_slope` as;
+
+```{r fa_UNCAL, eval=FALSE}
+uncalib_slope(d = dr_uncal, id.var = design.variables, time.var = time.variable, 
+              fluorescence = fluorescence.variable)
+```
+
+And behind the scenes, this is going on;
+
+```{r uncal_lmstats, eval=FALSE}
+ddply(d, .variables = id.var,
+     .fun = "lm_stats", xvar = time.var, yvar = fluorescence)
+```
+
+`uncalib_slope` utilizes another funciton within `enzalyze` called `lm_stats` for the regression analysis. The reason for using `lm_stats` versus one of the more common R functions for creating linear models is that `lm_stats` contains safeguards to safely calculate and return the regression components for the entire data frame even if there is a formatting error such as a missing value. It then returns the results as a vector (because our data in vector form is easier to use from here).
+
+```{r uncal_fcn, echo=FALSE}
+lm_dframe <- uncalib_slope(d = dr_uncal, id.var = c("rep", "treatment", "substrate"), time.var = "elapsed", fluorescence = "RFU")
+head(lm_dframe)
+```
+
+### `lm_stats`
+
+```{r lm_stats, eval=FALSE}
+lm_stats(d, xvar, yvar)
+```
+
+Creates a linear model between a designated dependent and independent variable, from a data frame, and returns the linear regression statistics (i.e slope, intercept, error, etc)
+
+```{r lmstats_example}
+lm_example <- lm_stats(d = dr_uncal, xvar = "elapsed", yvar = "RFU")
+lm_example
+```
+
+## `calib_slope`
+
+Within `find_activity`, the data for the calibration curve is fed through `read_long` and the measured values are checked to assure there are no characters that would cause an error before `calib_slope` is used to find the slope of the calibration curve.  The difference between this and the process for the uncalibrated data is the use of `enzalyze_reform` to calculate elapsed times before finding the regression statistics.
+
+### Data Set
+
+Should your calibration curve cause you difficulty, here is how the example data set in this vignette is structured in case you want to replicate it 
+
+```{r demo_data, echo=FALSE, warning=FALSE, message=FALSE}
+d_cal <- read_long(x = "../data/calib_curve.csv")
+head(d_cal)
+```
+
+`calib_slope` uses `lm_stats` to create a linear model of the `concentration.variable` and `fluorescence.variable` (default variables being `"conc.AMC.nM"` & `"RFU"`, respectively) and extracts the slope; returning it as a one-row vector. `lm_stats` trumps the base R function `lm` here because we can have the regression returned as a vector instead of a data frame.
+
+```{r cal_curve}
+d_cal[ , "RFU"] <- as.numeric(gsub(",", "", d_cal[ ,"RFU"]))
+```
+```{r print_curve, echo = FALSE, fig.height= 5, fig.width=8}
+p_curve <- curve_plotr(data = d_cal, concentration.variable = "conc.AMC.nM", 
+                       fluorescence.variable = "RFU", 
+                       curvelabel = "Calibration Curve site ", site.code = "test_vignette")
+print(p_curve)
+```
+
+Along with a plot of the calibration curve, `calib_slope` uses `lm_stats` to create a linear model of the `concentration.variable` and `fluorescence.variable` (default variables being `"conc.AMC.nM"` & `"RFU"`, respectively). Then it extracts the slope and returns it as a one-row vector. `lm_stats` trumps the base R function `lm` here because we can have the regression returned as a vector instead of a data frame.
+
+```{r cal_slope}
+cal_slope <- calib_slope(d = d_cal, xvar = "conc.AMC.nM", yvar = "RFU")
+cal_slope
+```
+
+## Activity
+
+Now that `activity` has calculated a slope for the calibration curve and a vector containing the regression statistics for the uncalibrated data, it creates two new columns in the final data frame; `lm_dframe`.  The first is for `v0` (activity), which it finds by dividing the uncalibrated slopes from the regression summary by the slope of the calibration curve.  The second column is for `v0.se` (activity standard-error), which is calculated in the same manner as `v0` except the slope standard-errors are used instead of the slopes.
+
+``` {r activity_v0}
+lm_dframe$v0 <- lm_dframe$slope / cal_slope
+lm_dframe$v0.se <- lm_dframe$slope.se / cal_slope
+head(lm_dframe)
+```
+
+The last of three plots the various substrates versus their activity.
+
+```{r v0_plot, echo=FALSE, fig.height= 5, fig.width=8}
+p_activity <- v0_plotr(data = lm_dframe, v0label = "Calibrated v0 site ", 
+                       site.code = "test_vignette")
+print(p_activity)
+```
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))

@@ -1,11 +1,14 @@
 ##' Puts biotek files into tidy form
 ##'
 ##' @description Formats raw biotek files into long form with standardized column headings
-##' 
+##' @param x - file name of data set (.csv)
+##' @param n - number of rows to read as data frame from text file
+##' @param d - horizontal data frame
+##' @return ***put something here***
 
-tidy_biotek <- function(d, temp.col="temp", time.col="Time..days.") {
+tidy_biotek <- function(x, n, d, temp.col="temp", time.col="Time..days.") {
   
-  fn <- "data/DS_fictional_biotek_data_short.csv"
+  fn <- paste0("data/", x)
   
   # Note: Fictional experiment: 
   # 16 standards: 0:15 uM (columns 1:16), 3 reps each (48 total)
@@ -15,7 +18,7 @@ tidy_biotek <- function(d, temp.col="temp", time.col="Time..days.") {
   # Crap: I forgot that read.csv bollixes the commas and spaces in column names
   
   # This should be passed in
-  d <- read.table(fn, sep=",", header=TRUE) # Change to read.csv(fn)
+  d <- read.csv(fn, nrows=n)
   
   # Make a vector of the "legalized" column names
   d_colnames <- names(d)

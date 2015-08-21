@@ -6,7 +6,6 @@
 ##' @param xvar Column name (as string) for time variable (as POSIXct or numeric)
 ##' @param tvar Column name (as string) for temperature variable
 ##' @details <<How this works>>
-##' @example <<include some examples>>
 ##' @export
 ##' 
 
