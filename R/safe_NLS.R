@@ -1,36 +1,67 @@
-# Calculate NLS & return
-# To do: import model as a parameter
+##' Calculates exponential models safely
+##' 
+##' @details **Works only if x variable is named time and y variable is named relative.ion.count**. THis is because of the way generate_exp_guess works, must fix.
+##' @param df A data frame
+##' @param xvar The x variable for the exponential model
+##' @param yvar The y variable for the exponential model
+##' @export
 
-#safe_NLS <- function(df, xvar="conc", yvar="v0", form=NULL, guesses=NULL) {
-safe_NLS <- function(df, xcol="conc", ycol="v0", form=NULL, guesses=NULL, ...) {
-  #browser()
-  # Create a default model based on Shane & Katherine's data
-  if(is.null(form)) {
-    form <- formula(I(v0 ~ (Vmax * conc)/(Km + conc)))
+safe_NLS <- function(df, xvar="time", yvar="relative.ion.count") {
+  
+  # To do: import model as a parameter
+  # Intermediate step
+  form <- formula(I(relative.ion.count ~ A * exp(-1*k*time)))
+  
+  ########
+  # Test arguments
+  ########
+  
+  
+  ## KLUGE-Y FIX for the situation in which the df is too short to fit an nls
+  ## GOTTA DO BETTER AT SOME POINT
+  # test whether there are at least two valid points
+  valid_df <- df[!is.na(df[ , xvar]) & !is.na(df[ , yvar]), ]
+  if(nrow(valid_df) < 2) {
+    # Return NA if the data frame doesn't have two valid points
+    return(NA)
   }
   
-  #xvals <- df[ , xvar]
-  #yvals <- df[ , yvar]
   
+  if(is.data.frame(df)) {
+    # Test for the presence of xvar and yvar in df
+    if(!(xvar %in% names(df))) {
+      stop(paste("There is no column in df called ", xvar))
+    }
+    if(!(yvar %in% names(df))) {
+      stop(paste("There is no column in df called ", yvar))
+    }
+  } else {
+    stop("df must be a data frame, but the object you have passed is something else.")
+  }
+  
+  # Turn xvar and yvar into vectors
+  xvals <- df[ , xvar]
+  yvals <- df[ , yvar]
+  
+  # Generate guesses for exponential fits
+  guesses <- generate_exp_guess(xvals, yvals) #This is not right
+  
+  # Test whether generate_exp_guess failed
   if(is.null(guesses)) {
-    # Note: I could maybe get a better guess with a 2-tiered approach
-    # First tier is LW-Burke approach, 2nd tier is this (or could use nls2 and try 'em both)
-    # Also I should offload the guessing to a different function, since these guesses only make sense for MM
-    
-    # Need to include some code to ensure that the guesses have the same variables as the formula
-    Km_guess <- mean(df[ , xcol], na.rm=TRUE) #I should move the guesses out of safe_NLS
-    Vmax_guess <- max(df[ , ycol], na.rm=TRUE)
-    guesses <- list(Km=Km_guess, Vmax=Vmax_guess)
+    return(NA)
   }
   
-  # Create model, return NULL with warning if it fails
-  mod <- tryCatch(
-    #browser(),
-    nls2(form, df, start=guesses),
+  # Determine domain for predictions
+  dom <- c(min(xvals), max(xvals))
+  
+  # Generate a model, or return NA otherwise (should it be NULL?)
+  mod <- tryCatch({
+    mod <- nls(form, df, start=guesses)
+    },
     # Note: on warning, the function executes and the warning is issued
     error=function(err) {
-      warning("This model threw an error")
-      NULL
+      #warning("This model threw an error")
+      NA
       })
   
   mod
