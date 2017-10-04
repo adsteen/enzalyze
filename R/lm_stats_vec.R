@@ -1,4 +1,4 @@
-##' Returns statistics for linear regressions (e.g. slope, intercept, error, etc)
+##' Returns statistics for linear regressions (e.g. slope, intercept, error, etc) **AND RETURNS A VECTOR**
 ##' 
 ##' @param d Data frame containing at least two numeric columns
 ##' @param xvar Numeric column to be used as the independant variable for the regression
@@ -10,7 +10,7 @@
 ##' lm_stats(mpg, xvar="cty", yvar="hwy")
 
 
-lm_stats <- function(d, xvar, yvar, debug=FALSE) {
+lm_stats_vec <- function(d, xvar, yvar, debug=FALSE) {
   # Function to safely return the slope, intercept, slope.se, int.se, rsq, and pvalue of a linear model
   #print(d[1, ])
   
@@ -102,14 +102,17 @@ lm_stats <- function(d, xvar, yvar, debug=FALSE) {
   
   n <- nrow(d[!is.na(d[ , xvar]) & !is.na(d[ , yvar]), ]) # I can't really think of how this would throw errors
   
-  # Return the parameters in a 1-row data frame (the most convenient format for plyr functions)
-  data.frame(slope = get_slope(m), 
-             int = get_int(m), 
-             slope.se=get_slope.se(m), 
-             int.se=get_int.se(m), 
-             pval=get_p_val(m),
-             rsq = get_rsq(m),
-             n=n)
+#   # Return the parameters in a 1-row data frame (the most convenient format for plyr functions)
+#   data.frame(slope = get_slope(m), 
+#              int = get_int(m), 
+#              slope.se=get_slope.se(m), 
+#              int.se=get_int.se(m), 
+#              pval=get_p_val(m),
+#              rsq = get_rsq(m),
+#              n=n)
+  # Return the parameters in a named vector
+  c("slope"=get_slope(m), "int"=get_int(m), "slope.se"=get_slope.se(m), "int.se"=get_int.se(m), "pval"=get_p_val(m), "rsq"=get_rsq(m), "n"=n)
+
 }
 
 

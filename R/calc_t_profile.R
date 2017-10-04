@@ -1,4 +1,4 @@
-##' Calculates t profile using patented Steen method
+##' Calculates t profile using patented T-RAMP method (note: not actually patented)
 ##' 
 ##' @description Calculates t_opt profile based on single-pot heating experiment
 ##' @param d Data frame containing columns with raw fluorescence, time or elapsed time, and temp
@@ -12,14 +12,19 @@
 
 calc_t_profile <- function(d, yvar="fl", xvar="elapsed", tvar="temp") {
   
+  # Sort the data frame by xvar
+  d <- d[order(d[ , xvar]), ]
+  
   # Pull out separate vectors in order to calculate rise and run
   n <- nrow(d)
-  xi <- d[2:n, "elapsed"]
-  xo <- d[1:(n-1), "elapsed"]
-  yi <- d[2:n, "fl"]
-  yo <- d[1:(n-1), "fl"]
-  Ti <- d[2:n, "temp"]
-  To <- d[1:n, "temp"]
+  xi <- d[2:n, xvar]
+  xo <- d[1:(n-1), xvar]
+  
+  yi <- d[2:n, yvar]
+  yo <- d[1:(n-1), yvar]
+  
+  Ti <- d[2:n, tvar]
+  To <- d[1:(n-1), tvar]
   
   # Calculate slope as rise/run
   rise <- yi-yo
