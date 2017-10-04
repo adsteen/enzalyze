@@ -2,7 +2,7 @@
 # To do: import model as a parameter
 
 #safe_NLS <- function(df, xvar="conc", yvar="v0", form=NULL, guesses=NULL) {
-safe_NLS <- function(df, xcol="conc", ycol="v0", form=NULL, guesses=NULL) {
+safe_NLS <- function(df, xcol="conc", ycol="v0", form=NULL, guesses=NULL, ...) {
   #browser()
   # Create a default model based on Shane & Katherine's data
   if(is.null(form)) {
@@ -15,6 +15,7 @@ safe_NLS <- function(df, xcol="conc", ycol="v0", form=NULL, guesses=NULL) {
   if(is.null(guesses)) {
     # Note: I could maybe get a better guess with a 2-tiered approach
     # First tier is LW-Burke approach, 2nd tier is this (or could use nls2 and try 'em both)
+    # Also I should offload the guessing to a different function, since these guesses only make sense for MM
     
     # Need to include some code to ensure that the guesses have the same variables as the formula
     Km_guess <- mean(df[ , xcol], na.rm=TRUE) #I should move the guesses out of safe_NLS
@@ -24,6 +25,7 @@ safe_NLS <- function(df, xcol="conc", ycol="v0", form=NULL, guesses=NULL) {
   
   # Create model, return NULL with warning if it fails
   mod <- tryCatch(
+    #browser(),
     nls2(form, df, start=guesses),
     # Note: on warning, the function executes and the warning is issued
     error=function(err) {
