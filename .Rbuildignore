@@ -1,6 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^cal_curve\.R$
+^R\\cal_curve\.R$
 calc_slopes.R
 calc_t_profile.R
 conver_time.R
