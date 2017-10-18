@@ -4,13 +4,21 @@
 ##' @param df A data frame
 ##' @param xvar The x variable for the exponential model
 ##' @param yvar The y variable for the exponential model
+##' @param form Formula to fit. At this point should be left as default
+##' @param start_fun Funtion to generate starting guess. In general this will be specific to the formula to be fit.
 ##' @export
 
-safe_NLS <- function(df, xvar="time", yvar="relative.ion.count") {
+safe_NLS <- function(df, xvar="time", yvar="relative.ion.count", 
+                     form=relative.ion.count ~ A * exp(-1*k*time), 
+                     start_fun=generate_exp_guess) {
   
   # To do: import model as a parameter
   # Intermediate step
-  form <- formula(I(relative.ion.count ~ A * exp(-1*k*time)))
+  if(is.null(form)) {
+    form <- formula(I(relative.ion.count ~ A * exp(-1*k*time)))
+  }
+  
+  
   
   ########
   # Test arguments
@@ -44,7 +52,7 @@ safe_NLS <- function(df, xvar="time", yvar="relative.ion.count") {
   yvals <- df[ , yvar]
   
   # Generate guesses for exponential fits
-  guesses <- generate_exp_guess(xvals, yvals) #This is not right
+  guesses <- start_fun(xvals, yvals) #This is not right
   
   # Test whether generate_exp_guess failed
   if(is.null(guesses)) {
