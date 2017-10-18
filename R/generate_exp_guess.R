@@ -12,7 +12,7 @@ generate_exp_guess <- function(df, xcol, ycol) {
   # bad.y <- (y <= 0) | (is.na(y)) | is.infinite(y)
   # y <- y[!bad.y]
   # x <- x[!bad.y]
-  df <- filter(df, xcol > 0 & ycol > 0)
+  df <- filter(df, !!xcol > 0 & !!ycol > 0)
   
   if(nrow(df) < 2) {
     # This usually is due to there being too many y values
@@ -23,7 +23,7 @@ generate_exp_guess <- function(df, xcol, ycol) {
   # # Take log values
   # log.y <- log(y)
   lin_mod <- tryCatch(
-    lm(log(ycol)~xcol, data=df),
+    lm(log(!!ycol)~!!xcol, data=df),
     error = function(err) {
       warning("error in using lm of log y ~ x to generate guesses for nls fit")
     },
@@ -45,6 +45,7 @@ generate_exp_guess <- function(df, xcol, ycol) {
   #   }
   #   )
   
+  ### NEEDS PROTECTION AGAINST BAD MODEL
   # Pull out the linear coefficients
   A_guess <- exp(coef(lin_mod)[1])
   k_guess <- coef(lin_mod)[2]
