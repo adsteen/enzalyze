@@ -12,7 +12,8 @@ generate_exp_guess <- function(df, xcol, ycol) {
   # bad.y <- (y <= 0) | (is.na(y)) | is.infinite(y)
   # y <- y[!bad.y]
   # x <- x[!bad.y]
-  df <- filter(df, !!xcol > 0 & !!ycol > 0)
+  
+  df <- filter(df, (!!xcol) > 0 & (!!ycol) > 0)
   
   if(nrow(df) < 2) {
     # This usually is due to there being too many y values
@@ -20,10 +21,28 @@ generate_exp_guess <- function(df, xcol, ycol) {
     return(NULL)
   } 
   
+  browser()
+  df <- mutate(df, log.ycol = log(!!ycol))
+  
+  
+  # THis is kinda ugly but Imma do it anyway:
+  # Turn x and y into vectors, create lm from vectors
+  # The reason I'm doing this is that lm(!!log.ycol ~ log.xcol, data=df) doesn't seem to work - invalid argument type
+  
+  xvals <- as.vector(df %>% select(!!xcol))
+  log.yvals <- df %>% select(log.ycol) %>% as.vector()
+  
+  lin_mod <- lm(log.yvals ~ xvals)
+  
+  
+  
+  
+  
   # # Take log values
   # log.y <- log(y)
   lin_mod <- tryCatch(
-    lm(log(!!ycol)~!!xcol, data=df),
+    #lm(log(!!ycol)~!!xcol, data=df),
+    lm(log.ycol ~ xcol, data = df),
     error = function(err) {
       warning("error in using lm of log y ~ x to generate guesses for nls fit")
     },
