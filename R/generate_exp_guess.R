@@ -9,40 +9,25 @@
 generate_exp_guess <- function(df, xcol, ycol) {
 
   # Strip down x and y to only values that you can take a log of
-  # bad.y <- (y <= 0) | (is.na(y)) | is.infinite(y)
-  # y <- y[!bad.y]
-  # x <- x[!bad.y]
-  
   df <- filter(df, (!!xcol) > 0 & (!!ycol) > 0)
   
+  # Return NA if the data frame has less than 2 good values
   if(nrow(df) < 2) {
     # This usually is due to there being too many y values
     #   for which you can't take a log
-    return(NULL)
+    return(NA)
   } 
   
-  browser()
-  df <- mutate(df, log.ycol = log(!!ycol))
+  # Make a column of the NATURAL log of y values
+  df <- mutate(df, ln.ycol = log(!!ycol))
   
-  
-  # THis is kinda ugly but Imma do it anyway:
-  # Turn x and y into vectors, create lm from vectors
-  # The reason I'm doing this is that lm(!!log.ycol ~ log.xcol, data=df) doesn't seem to work - invalid argument type
-  
-  xvals <- as.vector(df %>% select(!!xcol))
-  log.yvals <- df %>% select(log.ycol) %>% as.vector()
-  
-  lin_mod <- lm(log.yvals ~ xvals)
-  
-  
-  
-  
-  
-  # # Take log values
-  # log.y <- log(y)
+  # Create a linear model
   lin_mod <- tryCatch(
     #lm(log(!!ycol)~!!xcol, data=df),
-    lm(log.ycol ~ xcol, data = df),
+    #lm(log.ycol ~ xcol, data = df),
+    
+    # This is an ugly way to do this!
+    lm(unlist(select(df, ln.ycol)) ~ unlist(select(df, !!xcol))),
     error = function(err) {
       warning("error in using lm of log y ~ x to generate guesses for nls fit")
     },
@@ -63,7 +48,7 @@ generate_exp_guess <- function(df, xcol, ycol) {
   #     warning("warning")
   #   }
   #   )
-  
+
   ### NEEDS PROTECTION AGAINST BAD MODEL
   # Pull out the linear coefficients
   A_guess <- exp(coef(lin_mod)[1])
