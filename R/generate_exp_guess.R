@@ -29,10 +29,11 @@ generate_exp_guess <- function(df, xcol, ycol) {
   # Turn x and y into vectors, create lm from vectors
   # The reason I'm doing this is that lm(!!log.ycol ~ log.xcol, data=df) doesn't seem to work - invalid argument type
   
-  xvals <- as.vector(df %>% select(!!xcol))
-  log.yvals <- df %>% select(log.ycol) %>% as.vector()
   
-  lin_mod <- lm(log.yvals ~ xvals)
+  # xvals <- as.vector(df %>% select(!!xcol))
+  # log.yvals <- df %>% select(log.ycol) %>% as.vector()
+  # 
+  # lin_mod <- lm(log.yvals ~ xvals)
   
   
   
@@ -42,7 +43,10 @@ generate_exp_guess <- function(df, xcol, ycol) {
   # log.y <- log(y)
   lin_mod <- tryCatch(
     #lm(log(!!ycol)~!!xcol, data=df),
-    lm(log.ycol ~ xcol, data = df),
+    #lm(log.ycol ~ xcol, data = df),
+    
+    # This is an ugly way to do this!
+    lin_mod <- lm(unlist(select(df, !!ycol)) ~ unlist(select(df, !!xcol))),
     error = function(err) {
       warning("error in using lm of log y ~ x to generate guesses for nls fit")
     },
