@@ -14,3 +14,11 @@ dummy_fun <- function(df, xcol, ycol) {
   
   
 }
+
+
+# SO answer
+my_lm <- function(df, xcol, ycol) {
+  form <- as.formula(paste(ycol, " ~ ", xcol)[2])
+  my_lm <- lm(form, data=df)
+  my_lm
+}
