@@ -1,6 +1,6 @@
 ##' Calculates exponential models safely
 ##' 
-##' @details **Works only if x variable is named time and y variable is named relative.ion.count**. THis is because of the way generate_exp_guess works, must fix.
+##' @details This function generates guesses for an exponential mode in which 
 ##' @param df A data frame
 ##' @param xcol The x variable for the exponential model
 ##' @param ycol The y variable for the exponential model
@@ -78,7 +78,7 @@ safe_NLS <- function(df, xcol=quo(time), ycol=quo(relative.ion.count), # These d
   # xvals <- df[ , xvar]
   # yvals <- df[ , yvar]
   
-  browser()
+  #browser()
   
   # Test whether generate_exp_guess failed
   if(is.null(guesses)) {
@@ -88,16 +88,20 @@ safe_NLS <- function(df, xcol=quo(time), ycol=quo(relative.ion.count), # These d
   # Determine domain for predictions
   dom <- c(min(select(df, !!xcol)), max(select(df, !!xcol)))
   
+  # Note that for form = mpg ~ A * exp(k * wt)
+  
+  
   # Generate a model, or return NA otherwise (should it be NULL?)
-  mod <- tryCatch({
-    mod <- nls2::nls2(!!form, df, start=guesses)
-    },
+  mod <- tryCatch(
+    mod <- nls2::nls2(form, df, start=guesses),
     # Note: on warning, the function executes and the warning is issued
     error=function(err) {
-      #warning("This model threw an error")
-      NA
-      })
+      warning(paste("The nonlinear fitting function nls2::nls2, using the formula", form, "threw the following error:\n", err))
+      NA # need to wrap form in the function that collapses a character vector to a single vector element
+      }
+    )
   
+  browser()
   mod
 }
 
