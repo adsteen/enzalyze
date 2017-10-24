@@ -12,22 +12,7 @@ safe_NLS <- function(df, xcol=quo(time), ycol=quo(relative.ion.count), # These d
                      form=relative.ion.count ~ A * exp(-1*k*time), 
                      start_fun=generate_exp_guess) {
   
-  # Old: xvar="time", yvar="relative.ion.count", 
-  
-  # # To do: import model as a parameter
-  # # Intermediate step
-  # if(is.null(form)) {
-  #   form <- formula(I(relative.ion.count ~ A * exp(-1*k*time)))
-  # }
-  
-  
-  ####
-  # Rewrite using nonstandard evaluation
-  ####
-  
-  ### Test input arguments first - not totally sure how to do that with expressions
-  # Test
-  #browser()
+  # Test that the columns supplied as xcol and ycol are in df
   if(is.data.frame(df)) {
     # Test that the specified columns are present
     tryCatch(
@@ -41,55 +26,18 @@ safe_NLS <- function(df, xcol=quo(time), ycol=quo(relative.ion.count), # These d
     error(paste("The object supplied as argument df is of class", class(df), ", but it should be a data frame"))
   }
 
-  
   # Generate guesses for exponential fits
   guesses <- start_fun(df, xcol, ycol) 
   
   
-  
-  ########
-  # Test arguments
-  ########
-  
-  
-  ## KLUGE-Y FIX for the situation in which the df is too short to fit an nls
-  ## GOTTA DO BETTER AT SOME POINT
-  # test whether there are at least two valid points
-  # valid_df <- df[!is.na(df[ , xvar]) & !is.na(df[ , yvar]), ]
-  # if(nrow(valid_df) < 2) {
-  #   # Return NA if the data frame doesn't have two valid points
-  #   return(NA)
-  # }
-  
-  
-  # if(is.data.frame(df)) {
-  #   # Test for the presence of xvar and yvar in df
-  #   if(!(xvar %in% names(df))) {
-  #     stop(paste("There is no column in df called ", xvar))
-  #   }
-  #   if(!(yvar %in% names(df))) {
-  #     stop(paste("There is no column in df called ", yvar))
-  #   }
-  # } else {
-  #   stop("df must be a data frame, but the object you have passed is something else.")
-  # }
-  # 
-  # # Turn xvar and yvar into vectors
-  # xvals <- df[ , xvar]
-  # yvals <- df[ , yvar]
-  
-  #browser()
-  
   # Test whether generate_exp_guess failed
   if(is.null(guesses)) {
-    return(NA) 
+    warning("Guessing function failed")
+    return(NA) # Not really sure what the right thing to do in this case is
   }
   
   # Determine domain for predictions
   dom <- c(min(select(df, !!xcol)), max(select(df, !!xcol)))
-  
-  # Note that for form = mpg ~ A * exp(k * wt)
-  
   
   # Generate a model, or return NA otherwise (should it be NULL?)
   mod <- tryCatch(
@@ -101,7 +49,6 @@ safe_NLS <- function(df, xcol=quo(time), ycol=quo(relative.ion.count), # These d
       }
     )
   
-  browser()
   mod
 }
 

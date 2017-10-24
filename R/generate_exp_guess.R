@@ -36,24 +36,12 @@ generate_exp_guess <- function(df, xcol, ycol) {
     }
   )
   
-  # Create linear model of log-transformed data
-  ### MUST WRAP THIS IN TRY.CATCH
-  # #lin.mod <- lm(log.y ~ x)
-  # lin.mod <- tryCatch(
-  #   lm(log.y ~ x),
-  #   error=function(err) {
-  #     warning("lm error")
-  #   },
-  #   warning=function(warn) {
-  #     warning("warning")
-  #   }
-  #   )
-
   ### NEEDS PROTECTION AGAINST BAD MODEL
   # Pull out the linear coefficients
   A_guess <- exp(coef(lin_mod)[1])
   k_guess <- coef(lin_mod)[2]
   
+browser()
   # Return properly-named list of guesses to feed to nls
   guess_list=list("A"=A_guess, "k"=k_guess)
   
